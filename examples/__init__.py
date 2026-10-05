@@ -1,1 +1,0 @@
-"""Selected public code example."""

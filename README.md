@@ -1,99 +1,132 @@
-# Haiox Smart Miner Engine ⚡
+# Haiox Smart Miner ⚡
 
-**Turn messy web pages into reusable, structured documents for research workflows.**
-
-## 🚀 Explore Smart Miner online
-
-**[Open the Smart Miner dashboard →](https://haiox-smart-miner-review.streamlit.app/)**  
-Access may require an invitation.
-
-No installation needed. Enter a public HTTPS page URL and click **Analyze page**
-to see automatic fetch routing and a cleaned document. An optional AI summary
-is available after the page is analyzed.
+**A reusable engine that turns one web page into a clean, structured document.**
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)
 ![HTTPX](https://img.shields.io/badge/HTTPX-HTTP_fetch-3B82F6?style=flat-square)
-![Playwright](https://img.shields.io/badge/Playwright-browser_fallback-2EAD33?style=flat-square&logo=playwright&logoColor=white)
-![Beautiful Soup](https://img.shields.io/badge/Beautiful_Soup-HTML_parsing-8B5CF6?style=flat-square)
-![Markdownify](https://img.shields.io/badge/Markdownify-structured_text-475569?style=flat-square)
-![Pydantic](https://img.shields.io/badge/Pydantic-schema_validation-E92063?style=flat-square&logo=pydantic&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-browser_fallback-2EAD33?style=flat-square&logo=playwright)
+![Pydantic](https://img.shields.io/badge/Pydantic-schema_validation-E92063?style=flat-square&logo=pydantic)
+![MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)
 
-> [!NOTE]
-> **This is the public portfolio view.** The full engine is developed privately.
-> This repository contains a small, testable routing excerpt from v1.2 and a
-> recorded example using synthetic data. It is not a downloadable engine build.
-
-Previously published as **AGInaz Smart Miner**. The project is now part of Haiox.
-
-## 🤔 Why Smart Miner?
-
-Web pages do not all need the same extraction method. Plain HTML can be fetched
-quickly over HTTP, while JavaScript-heavy pages may need a browser. Smart Miner
-checks the visible content before deciding whether to render the page. It then
-keeps useful structure—headings, tables, links, source URL and valid JSON-LD—in
-a document that can be reused for later extraction.
-
-## 🔎 Explore more
-
-| Resource | Open |
-| --- | --- |
-| 📄 A messy page turned into structured input | [Before/after example](examples/sample-output.md) |
-| 🧩 A small implementation excerpt | [Content-quality signal](examples/content_quality.py) and [its tests](tests/test_content_quality.py) |
-
-The before/after example is recorded output from synthetic data.
-
-## 🏗️ How the engine works
+Smart Miner fetches ordinary pages with HTTPX, evaluates the content, and uses
+Playwright only when the first response is insufficient. It then removes page
+noise and preserves headings, links, tables, source metadata and valid JSON-LD
+in a `CleanDocument`. Optional schema extraction accepts a model callable you
+provide; the core itself makes **no LLM call** and requires **no API key**.
 
 <p align="center">
-  <img src="assets/pipeline-overview.svg" width="760" alt="Smart Miner pipeline: URL, HTTP fetch, content-based routing, clean document, and optional validated extraction">
+  <img src="assets/pipeline-overview.svg" width="760" alt="Smart Miner: HTTP fetch, content routing, browser fallback, local cleaning and optional schema extraction">
 </p>
 
-- ⚡ **Browser only when needed:** the fallback has a bounded wait for dynamic
-  content and runs only when the static-content checks call for it.
-- 🧹 **Structure over noise:** cleaning retains headings, tables, resolved links
-  and valid JSON-LD. Identical navigation blocks can be deduplicated; repeated
-  data rows remain.
-- 🛡️ **Stop at barriers:** challenge/CAPTCHA detection is heuristic and does
-  not solve CAPTCHA or recover access.
-- ✅ **Validate the shape:** Pydantic checks output structure and types, not
-  whether the extracted claims are true.
+[Try the hosted dashboard](https://haiox-smart-miner-review.streamlit.app/) ·
+Access may require an invitation. Its application source and credentials are
+not part of this repository.
 
-The v1.2 `route()` response keeps `success`, `text`, `error` and `routing`
-metadata. The newer local pipeline adds a reusable document and an explicit
-status for blocked pages.
+> **v1.3 open-core source.** Install from this repository checkout.
+> A PyPI package and an official GitHub Release have not been published.
 
-## 🧪 Evidence
+## Install
 
-The local prototype passed **19 offline tests** and **one opt-in browser test**
-using a delayed AJAX page served from a loopback server. The public routing
-excerpt has [four independent tests](tests/test_content_quality.py):
+Python 3.11+ is required.
 
 ```bash
-python -m unittest discover -v
+python -m pip install -e .
 ```
 
-In one synthetic fixture, raw HTML measured **473 characters** and the complete
-clean extraction input measured **309 characters**, including source URL and
-title. These are character counts for one example, not a token-cost benchmark
-or a claimed saving across websites.
+For JavaScript-rendered pages, install the optional browser dependency and
+Chromium once:
 
-The demonstrated scope is single-page fetching, cleaning, barrier stopping
-and optional extraction. It does not include login recovery, CAPTCHA solving,
-large-scale crawling or multi-agent orchestration.
+```bash
+python -m pip install -e ".[browser]"
+python -m playwright install chromium
+```
 
-## 📦 What is public
+Run the **offline** example and tests without a key or website access:
 
-This repository contains the README, a recorded synthetic output and a small
-v1.2 routing-signal excerpt with tests. It has a fresh Git history, separate from the private engine repository. The fetcher,
-cleaner, orchestrator, browser control and LLM provider are **not included**.
+```bash
+python examples/offline_example.py
+python -m unittest discover -s tests -v
+```
 
-The hosted dashboard linked above runs from the private engine repository.
-The portfolio does not need a GitHub Release.
+## Use the core
 
-## 🔒 Copyright and use
+```python
+import asyncio
+from smart_miner import route
 
-Copyright © 2026 Haiox. All rights reserved. This public portfolio is
-available to view, but it is not open source and does not grant permission to
-reuse its code or other contents. See [LICENSE](LICENSE) for details.
+async def main():
+    result = await route("https://example.org/")  # A URL you trust
+    if not result["success"]:
+        print(result["status"], result["routing"]["reason_codes"])
+        return
+    print(result["routing"]["strategy"])
+    print(result["document"]["markdown"])
 
-**Project:** Haiox · **Private development target:** v1.3.0
+asyncio.run(main())
+```
+
+`route()` retains the v1.2 `success`, `text` and `error` fields. The v1.3
+pipeline adds `status` (`ok`, `blocked`, `failed`), a reusable `document`, and
+`routing` details including the chosen strategy, reason codes and timings.
+`text` is plain visible text; Markdown is in `document`.
+
+For local or application-specific extraction, pass a cleaned document to
+`StructuredExtractor` with your own async generator and Pydantic schema. The
+generator is called **only when you explicitly invoke it**:
+
+```python
+import asyncio
+from pydantic import BaseModel
+from smart_miner import CleanDocument, StructuredExtractor
+from smart_miner import route
+
+class Summary(BaseModel):
+    headline: str
+
+async def generate(clean_text: str) -> dict:
+    # Replace with your own provider. This example makes no network call.
+    return {"headline": "Example"}
+
+async def main():
+    result = await route("https://example.org/")
+    if not result["success"]:
+        return
+    document = CleanDocument.model_validate(result["document"])
+    summary = await StructuredExtractor(generate, Summary).extract(document)
+    print(summary.model_dump())
+
+asyncio.run(main())
+```
+
+The full pipeline is `CrawlOrchestrator`: fetch → detect barriers → clean →
+optionally extract. You can reuse `CleanDocument` for different schemas without
+fetching the page again.
+
+## Scope and safety
+
+- One page per run; no login flow, CAPTCHA solving or multi-page crawling.
+- Challenge pages and HTTP 401/403/429 stop before extraction. Known `200` error
+  pages are rejected, but barrier detection is heuristic; unknown soft blocks
+  can still be missed. Check source provenance before paid model calls.
+- The core `PageFetcher` is for **trusted URLs**. It does not enforce a public
+  URL allowlist, block private network targets or cap response size. A hosted
+  URL-input service needs its own network sandbox, URL policy and rate limits.
+- Browser fallback is bounded but cannot guarantee that every AJAX page has
+  finished rendering. A caller may provide a readiness selector through
+  `PageFetcher` when integrating with a known site.
+- Pydantic validates output shape, not factual accuracy. Page text is untrusted
+  input; do not follow instructions embedded in it.
+- Character counts in `CleanDocument` are **not** token counts or cost savings.
+
+The hosted portfolio dashboard and deployment secrets are maintained
+separately from this open core. No credentials or revenue-project targets are
+included here.
+
+## Contributing
+
+Issues and focused pull requests are welcome. Run the offline suite before a
+PR; the browser integration test is opt-in with
+`SMART_MINER_BROWSER_TESTS=1` after installing Playwright Chromium. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the development flow.
+
+Licensed under [MIT](LICENSE). Copyright © 2026 Haiox.

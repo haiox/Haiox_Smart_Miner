@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "haiox-smart-miner"
+version = "1.3.0"
+description = "Hybrid HTTP/browser single-page extraction and local document cleaning"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "Haiox"}]
+dependencies = [
+  "httpx>=0.27,<1",
+  "beautifulsoup4>=4.12,<5",
+  "markdownify>=1,<2",
+  "pydantic>=2,<3",
+]
+
+[project.optional-dependencies]
+browser = ["playwright>=1.50,<2"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+smart_miner = ["py.typed"]

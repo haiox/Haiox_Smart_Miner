@@ -1,0 +1,8 @@
+<!doctype html><html><body><main id="content">Loading</main>
+<script>
+setTimeout(async () => {
+  const result = await fetch('/static.html');
+  document.querySelector('#content').innerHTML = await result.text();
+  document.querySelector('#content').setAttribute('data-ready', 'true');
+}, 250);
+</script></body></html>

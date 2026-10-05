@@ -1,1 +1,1 @@
-"""Tests for the selected public excerpt."""
+"""Offline regression tests for the public core."""

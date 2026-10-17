@@ -6,6 +6,7 @@
 ![HTTPX](https://img.shields.io/badge/HTTPX-HTTP_fetch-3B82F6?style=flat-square)
 ![Playwright](https://img.shields.io/badge/Playwright-browser_fallback-2EAD33?style=flat-square&logo=playwright)
 ![Pydantic](https://img.shields.io/badge/Pydantic-schema_validation-E92063?style=flat-square&logo=pydantic)
+![Nightly](https://img.shields.io/badge/Nightly_Build-1%2F30-orange?style=flat-square)
 ![MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)
 
 Smart Miner fetches ordinary pages with HTTPX, evaluates the content, and uses
@@ -19,11 +20,9 @@ provide; the core itself makes **no LLM call** and requires **no API key**.
 </p>
 
 [Try the hosted dashboard](https://haiox-smart-miner-review.streamlit.app/) ·
-Access may require an invitation. Its application source and credentials are
-not part of this repository.
+Or run the local review dashboard with `streamlit run streamlit_app.py`.
 
-> **v1.3 open-core source.** Install from this repository checkout.
-> A PyPI package and an official GitHub Release have not been published.
+> **v1.3.1 (Nightly Build 1/30).** Follow our 30-day architectural sprint in [CHANGELOG.md](CHANGELOG.md).
 
 ## Install
 
@@ -31,6 +30,13 @@ Python 3.11+ is required.
 
 ```bash
 python -m pip install -e .
+```
+
+To run the interactive Streamlit review dashboard:
+
+```bash
+python -m pip install -e ".[demo]"
+streamlit run streamlit_app.py
 ```
 
 For JavaScript-rendered pages, install the optional browser dependency and
@@ -55,7 +61,7 @@ import asyncio
 from smart_miner import route
 
 async def main():
-    result = await route("https://example.org/")  # A URL you trust
+    result = await route("https://example.org/")  # Tested & public URL
     if not result["success"]:
         print(result["status"], result["routing"]["reason_codes"])
         return
@@ -65,7 +71,7 @@ async def main():
 asyncio.run(main())
 ```
 
-`route()` retains the v1.2 `success`, `text` and `error` fields. The v1.3
+`route()` retains the v1.2 `success`, `text` and `error` fields. The v1.3+
 pipeline adds `status` (`ok`, `blocked`, `failed`), a reusable `document`, and
 `routing` details including the chosen strategy, reason codes and timings.
 `text` is plain visible text; Markdown is in `document`.
@@ -98,29 +104,26 @@ async def main():
 asyncio.run(main())
 ```
 
-The full pipeline is `CrawlOrchestrator`: fetch → detect barriers → clean →
+The full pipeline is `CrawlOrchestrator`: validate URL → fetch → detect barriers → clean →
 optionally extract. You can reuse `CleanDocument` for different schemas without
 fetching the page again.
 
 ## Scope and safety
 
+- **Zero-Trust URL & SSRF Defense:** Pre-fetch DNS resolution strictly rejects loopback
+  (`127.0.0.1`, `localhost`), private RFC1918 subnets, and cloud metadata endpoints
+  (`169.254.169.254`) before making any HTTP or browser connection. Pass
+  `allow_private_urls=True` only for local test environments.
 - One page per run; no login flow, CAPTCHA solving or multi-page crawling.
 - Challenge pages and HTTP 401/403/429 stop before extraction. Known `200` error
   pages are rejected, but barrier detection is heuristic; unknown soft blocks
   can still be missed. Check source provenance before paid model calls.
-- The core `PageFetcher` is for **trusted URLs**. It does not enforce a public
-  URL allowlist, block private network targets or cap response size. A hosted
-  URL-input service needs its own network sandbox, URL policy and rate limits.
 - Browser fallback is bounded but cannot guarantee that every AJAX page has
   finished rendering. A caller may provide a readiness selector through
   `PageFetcher` when integrating with a known site.
 - Pydantic validates output shape, not factual accuracy. Page text is untrusted
   input; do not follow instructions embedded in it.
 - Character counts in `CleanDocument` are **not** token counts or cost savings.
-
-The hosted portfolio dashboard and deployment secrets are maintained
-separately from this open core. No credentials or revenue-project targets are
-included here.
 
 ## Contributing
 

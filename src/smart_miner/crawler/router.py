@@ -73,33 +73,45 @@ def evaluate_content_quality(text: str, min_text_length: int = 600) -> Dict[str,
     }
 
 
-async def fetch_static(url: str) -> str:
+async def fetch_static(url: str, *, allow_private_urls: bool = False) -> str:
     """Compatibility wrapper returning visible text."""
     from .fetcher import PageFetcher
     from .barriers import barrier_reason
-    page = await PageFetcher().fetch_static(url)
+    page = await PageFetcher(allow_private_urls=allow_private_urls).fetch_static(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
     return _extract_visible_text(page.html)
 
 
-async def fetch_dynamic(url: str) -> str:
+async def fetch_dynamic(url: str, *, allow_private_urls: bool = False) -> str:
     """Compatibility wrapper returning visible text."""
     from .fetcher import PageFetcher
     from .barriers import barrier_reason
-    page = await PageFetcher().fetch_dynamic(url)
+    page = await PageFetcher(allow_private_urls=allow_private_urls).fetch_dynamic(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
     return _extract_visible_text(page.html)
 
 
-async def route(url: str, min_text_length: int = 600, *, wait_selector=None,
-                browser_timeout_ms=30000) -> Dict[str, Any]:
+async def route(
+    url: str,
+    min_text_length: int = 600,
+    *,
+    wait_selector=None,
+    browser_timeout_ms=30000,
+    allow_private_urls: bool = False,
+) -> Dict[str, Any]:
     """v1.2 keys and plain text, plus reusable document and barrier status."""
     from .fetcher import PageFetcher
     if __package__ == "crawler":
         from pipeline.orchestrator import CrawlOrchestrator
     else:
         from ..pipeline.orchestrator import CrawlOrchestrator
-    return await CrawlOrchestrator(PageFetcher(wait_selector, browser_timeout_ms)).run(
-        url, min_text_length=min_text_length)
+    fetcher = PageFetcher(
+        wait_selector=wait_selector,
+        browser_timeout_ms=browser_timeout_ms,
+        allow_private_urls=allow_private_urls,
+    )
+    return await CrawlOrchestrator(fetcher).run(
+        url, min_text_length=min_text_length
+    )

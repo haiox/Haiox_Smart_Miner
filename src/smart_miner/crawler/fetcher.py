@@ -3,10 +3,13 @@ import asyncio
 from dataclasses import dataclass
 
 import httpx
+
 try:
     from playwright.async_api import async_playwright
 except ModuleNotFoundError:
     async_playwright = None
+
+from .security import validate_url_target
 
 
 @dataclass(frozen=True)
@@ -18,19 +21,25 @@ class FetchedPage:
 
 
 class PageFetcher:
-    def __init__(self, wait_selector=None, browser_timeout_ms=30000):
+    def __init__(self, wait_selector=None, browser_timeout_ms=30000, *, allow_private_urls=False):
         if browser_timeout_ms <= 0:
             raise ValueError("browser_timeout_ms must be positive")
         self.wait_selector = wait_selector
         self.browser_timeout_ms = browser_timeout_ms
+        self.allow_private_urls = allow_private_urls
 
     async def fetch_static(self, url):
+        validate_url_target(url, allow_private=self.allow_private_urls)
         async with httpx.AsyncClient(follow_redirects=True) as client:
             response = await client.get(url, timeout=15.0)
+            final_url = str(response.url)
+            if not self.allow_private_urls and final_url != url:
+                validate_url_target(final_url, allow_private=False)
             # Inspect error-page bodies for access barriers before raising.
-            return FetchedPage(response.text, str(response.url), response.status_code)
+            return FetchedPage(response.text, final_url, response.status_code)
 
     async def fetch_dynamic(self, url):
+        validate_url_target(url, allow_private=self.allow_private_urls)
         if async_playwright is None:
             raise RuntimeError("Install playwright to enable browser fallback")
         async with async_playwright() as playwright:
@@ -43,6 +52,8 @@ class PageFetcher:
                     page = await context.new_page()
                     response = await page.goto(url, wait_until="domcontentloaded",
                                                timeout=self.browser_timeout_ms)
+                    if not self.allow_private_urls and page.url != url:
+                        validate_url_target(page.url, allow_private=False)
                     from .barriers import barrier_reason
                     initial = FetchedPage(await page.content(), page.url,
                                           response.status if response else 200, "dynamic")

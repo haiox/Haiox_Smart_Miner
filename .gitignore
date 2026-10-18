@@ -11,3 +11,6 @@ dist/
 !.env.example
 .streamlit/
 outputs/
+docs/
+internal/
+*.token

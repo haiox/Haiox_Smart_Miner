@@ -6,7 +6,7 @@
 ![HTTPX](https://img.shields.io/badge/HTTPX-HTTP_fetch-3B82F6?style=flat-square)
 ![Playwright](https://img.shields.io/badge/Playwright-browser_fallback-2EAD33?style=flat-square&logo=playwright)
 ![Pydantic](https://img.shields.io/badge/Pydantic-schema_validation-E92063?style=flat-square&logo=pydantic)
-![Nightly](https://img.shields.io/badge/Nightly_Build-1%2F30-orange?style=flat-square)
+![Nightly](https://img.shields.io/badge/Nightly_Build-2%2F30-orange?style=flat-square)
 ![MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)
 
 Smart Miner fetches ordinary pages with HTTPX, evaluates the content, and uses
@@ -22,7 +22,7 @@ provide; the core itself makes **no LLM call** and requires **no API key**.
 [Try the hosted dashboard](https://haiox-smart-miner-review.streamlit.app/) ·
 Or run the local review dashboard with `streamlit run streamlit_app.py`.
 
-> **v1.3.1 (Nightly Build 1/30).** Follow our 30-day architectural sprint in [CHANGELOG.md](CHANGELOG.md).
+> **v1.3.2 (Nightly Build 2/30).** Follow our 30-day architectural sprint in [CHANGELOG.md](CHANGELOG.md).
 
 ## Install
 
@@ -104,7 +104,7 @@ async def main():
 asyncio.run(main())
 ```
 
-The full pipeline is `CrawlOrchestrator`: validate URL → fetch → detect barriers → clean →
+The full pipeline is `CrawlOrchestrator`: validate URL → bounded fetch → detect barriers → clean →
 optionally extract. You can reuse `CleanDocument` for different schemas without
 fetching the page again.
 
@@ -114,6 +114,10 @@ fetching the page again.
   (`127.0.0.1`, `localhost`), private RFC1918 subnets, and cloud metadata endpoints
   (`169.254.169.254`) before making any HTTP or browser connection. Pass
   `allow_private_urls=True` only for local test environments.
+- **Bounded Streaming & Anti-DoS:** Transport enforces a chunked streaming byte cap
+  (default 5 MB) and pre-checks Content-Length and Content-Type headers. Rejects binary/media
+  targets and terminates streams exceeding memory thresholds to prevent decompression bombs
+  (Gzip/Zip bombs) and Out-Of-Memory crashes.
 - One page per run; no login flow, CAPTCHA solving or multi-page crawling.
 - Challenge pages and HTTP 401/403/429 stop before extraction. Known `200` error
   pages are rejected, but barrier detection is heuristic; unknown soft blocks

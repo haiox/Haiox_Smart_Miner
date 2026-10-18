@@ -1,6 +1,6 @@
 """Haiox Smart Miner - Review & Exploration Dashboard (Streamlit Demo).
 
-Interactive UI to test the hybrid crawler, SSRF security shield, barrier
+Interactive UI to test the hybrid crawler, SSRF & Anti-DoS shields, barrier
 detection, document cleaner, structured evidence generation and optional
 OpenRouter AI schema extraction.
 """
@@ -67,11 +67,11 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner Review <span class="security-badge">🛡️ SSRF Shield Active</span></div>',
+    '<div class="main-header">⚡ Haiox Smart Miner Review <span class="security-badge">🛡️ SSRF & Anti-DoS Shield Active</span></div>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Validated Extraction, Zero-Trust Transport & Evidence Generation</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Bounded Transport, Zero-Trust Defense & Evidence Generation</div>',
     unsafe_allow_html=True,
 )
 
@@ -79,6 +79,7 @@ st.markdown(
 with st.sidebar:
     st.header("⚙️ Crawler Configuration")
     min_length = st.slider("Min Text Length (Chars)", min_value=100, max_value=2000, value=600, step=50)
+    max_size_mb = st.slider("Max Response Size (MB)", min_value=1, max_value=20, value=5, step=1, help="Bounded streaming cutoff to prevent OOM and zip-bomb attacks.")
     prefer_main = st.checkbox("Prefer Main Article Region", value=True)
     force_dynamic = st.checkbox("Force Browser Fallback (Dynamic)", value=False)
     allow_private = st.checkbox("Allow Private URLs (Dev/Test only)", value=False, help="Enable only for local test servers.")
@@ -114,7 +115,7 @@ with st.sidebar:
         - **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** Governed Workflow
         """
     )
-    st.caption("Nightly Build Dashboard · v1.3.1 (Night 1)")
+    st.caption("Nightly Build Dashboard · v1.3.2 (Night 2)")
 
 # Main URL Input Area
 col_url, col_btn = st.columns([5, 1])
@@ -127,11 +128,13 @@ with col_url:
 with col_btn:
     mine_clicked = st.button("🚀 Mine Page", use_container_width=True, type="primary")
 
-# Presets including SSRF test cases
-st.caption("Quick test presets: "
-           "`https://en.wikipedia.org/wiki/Web_scraping` · "
-           "`http://127.0.0.1:80/secret` (SSRF Test) · "
-           "`http://169.254.169.254/latest/meta-data/` (Cloud Metadata Test)")
+# Presets including SSRF and Stream Bounding test cases
+st.caption(
+    "Quick test presets: "
+    "`https://en.wikipedia.org/wiki/Web_scraping` · "
+    "`http://127.0.0.1:80/secret` (SSRF Shield Test) · "
+    "`https://speed.hetzner.de/100MB.bin` (Anti-DoS Size Cutoff Test)"
+)
 
 # Pydantic Schema for extraction test
 class ArticleSummary(BaseModel):
@@ -141,7 +144,8 @@ class ArticleSummary(BaseModel):
 
 
 if mine_clicked and target_url:
-    with st.spinner("Executing Smart Miner pipeline (Validate URL → Fetch → Barriers → Clean)..."):
+    max_bytes = max_size_mb * 1024 * 1024
+    with st.spinner("Executing Smart Miner pipeline (Validate URL → Bounded Stream → Barriers → Clean)..."):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
@@ -151,6 +155,7 @@ if mine_clicked and target_url:
                     min_text_length=min_length,
                     wait_selector=wait_selector if wait_selector else None,
                     allow_private_urls=allow_private,
+                    max_response_bytes=max_bytes,
                 )
             )
         except Exception as e:
@@ -170,8 +175,17 @@ if mine_clicked and target_url:
     total_time = timings.get("total", 0.0)
     reasons = routing.get("reason_codes", [])
 
-    # SSRF Banner if blocked
-    if any(code in {"NON_PUBLIC_ADDRESS", "INVALID_SCHEME", "DISALLOWED_PORT"} for code in reasons):
+    # Security & Anti-DoS Banners
+    if "PAGE_TOO_LARGE" in reasons:
+        st.error(
+            f"🚨 **Anti-DoS Shield Aborted Download!** Target exceeded the maximum size limit of `{max_size_mb} MB`. "
+            "Bounded streaming prevented potential OOM or decompression bomb."
+        )
+    elif "UNSUPPORTED_CONTENT_TYPE" in reasons:
+        st.error(
+            "🚨 **Unsupported Content-Type!** Target returned non-HTML binary/media data (image, video, or archive)."
+        )
+    elif any(code in {"NON_PUBLIC_ADDRESS", "INVALID_SCHEME", "DISALLOWED_PORT"} for code in reasons):
         st.error(
             f"🛡️ **Zero-Trust Security Shield Blocked Target!** "
             f"Reason: `{reasons[0]}`. Access to private/internal network targets is strictly prevented."
@@ -245,6 +259,7 @@ if mine_clicked and target_url:
                 "timing_ms": timings,
                 "status": status,
                 "security_verified": not any(c in {"NON_PUBLIC_ADDRESS", "INVALID_SCHEME"} for c in reasons),
+                "bounded_stream_verified": "PAGE_TOO_LARGE" not in reasons,
             },
             "grounding_summary": {
                 "title": doc_data.get("title", ""),
@@ -314,4 +329,5 @@ if mine_clicked and target_url:
             "status": res.get("status"),
             "error": res.get("error"),
             "security_shield": "ACTIVE",
+            "anti_dos_stream_shield": "ACTIVE",
         })

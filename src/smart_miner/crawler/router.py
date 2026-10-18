@@ -7,6 +7,8 @@ try:
 except ModuleNotFoundError:  # The standard-library parser below is the fallback.
     BeautifulSoup = None
 
+from .fetcher import DEFAULT_MAX_RESPONSE_BYTES
+
 LOW_TEXT_DIVERSITY_THRESHOLD = 0.2
 MIN_WORDS_FOR_DIVERSITY_CHECK = 20
 
@@ -73,21 +75,39 @@ def evaluate_content_quality(text: str, min_text_length: int = 600) -> Dict[str,
     }
 
 
-async def fetch_static(url: str, *, allow_private_urls: bool = False) -> str:
+async def fetch_static(
+    url: str,
+    *,
+    allow_private_urls: bool = False,
+    max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+) -> str:
     """Compatibility wrapper returning visible text."""
     from .fetcher import PageFetcher
     from .barriers import barrier_reason
-    page = await PageFetcher(allow_private_urls=allow_private_urls).fetch_static(url)
+
+    page = await PageFetcher(
+        allow_private_urls=allow_private_urls,
+        max_response_bytes=max_response_bytes,
+    ).fetch_static(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
     return _extract_visible_text(page.html)
 
 
-async def fetch_dynamic(url: str, *, allow_private_urls: bool = False) -> str:
+async def fetch_dynamic(
+    url: str,
+    *,
+    allow_private_urls: bool = False,
+    max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+) -> str:
     """Compatibility wrapper returning visible text."""
     from .fetcher import PageFetcher
     from .barriers import barrier_reason
-    page = await PageFetcher(allow_private_urls=allow_private_urls).fetch_dynamic(url)
+
+    page = await PageFetcher(
+        allow_private_urls=allow_private_urls,
+        max_response_bytes=max_response_bytes,
+    ).fetch_dynamic(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
     return _extract_visible_text(page.html)
@@ -98,11 +118,13 @@ async def route(
     min_text_length: int = 600,
     *,
     wait_selector=None,
-    browser_timeout_ms=30000,
+    browser_timeout_ms: int = 30000,
     allow_private_urls: bool = False,
+    max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
 ) -> Dict[str, Any]:
     """v1.2 keys and plain text, plus reusable document and barrier status."""
     from .fetcher import PageFetcher
+
     if __package__ == "crawler":
         from pipeline.orchestrator import CrawlOrchestrator
     else:
@@ -111,6 +133,7 @@ async def route(
         wait_selector=wait_selector,
         browser_timeout_ms=browser_timeout_ms,
         allow_private_urls=allow_private_urls,
+        max_response_bytes=max_response_bytes,
     )
     return await CrawlOrchestrator(fetcher).run(
         url, min_text_length=min_text_length

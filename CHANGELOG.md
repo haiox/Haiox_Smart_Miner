@@ -4,6 +4,28 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.3.2] - 2026-10-19 (Night 2 / 30)
+
+### 🛡️ Bounded Streaming & Anti-DoS Transport Shield
+- **Bounded Stream Transport (`smart_miner.crawler.fetcher`):**
+  - Replaced monolithic `client.get()` in `PageFetcher.fetch_static` with chunked, bounded streaming (`client.stream()` + `aiter_bytes()`).
+  - Added configurable `max_response_bytes` cutoff (default 5 MB; configurable per fetch and in `route()`).
+  - Strict Content-Length pre-check: rejects oversized payload headers (`PAGE_TOO_LARGE`) prior to downloading response body chunks.
+  - Runtime chunk accumulator cutoff: immediately terminates streams exceeding byte limits to prevent Decompression Bombs (Gzip/Zip bombs) and infinite streaming endpoints.
+  - Content-Type header inspection: rejects binary, video, audio, and archive MIME types (`UNSUPPORTED_CONTENT_TYPE`) without consuming CPU or memory on parsing non-HTML data.
+  - Safe multi-encoding fallback: handles character set decoding with lossless fallback to prevent `UnicodeDecodeError` crashes on malformed page bytes.
+- **Orchestration Integration:**
+  - Exposed `max_response_bytes` parameter in `smart_miner.route()` and `smart_miner.fetch_static()`.
+  - Maintained complete backward compatibility with existing test mocks and offline execution pipelines.
+- **Test Suite (`tests/test_stream_limits.py`):**
+  - Added 7 comprehensive offline unit and integration tests covering binary MIME rejection, Content-Length pre-check, chunked stream cutoff, and orchestrator failure reason mappings.
+- **Interactive Streamlit Review Dashboard (`streamlit_app.py`):**
+  - Added "Max Response Size (MB)" slider in sidebar for interactive testing.
+  - Added visual error banners for `PAGE_TOO_LARGE` and `UNSUPPORTED_CONTENT_TYPE`.
+  - Added Hetzner large file preset for live size limit testing.
+
+---
+
 ## [1.3.1] - 2026-10-18 (Night 1 / 30)
 
 ### 🛡️ Security & Zero-Trust Transport

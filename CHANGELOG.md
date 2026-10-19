@@ -4,7 +4,7 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
-## [1.3.4] - 2026-10-20 (Night 4 / 30)
+## [1.3.4] - 2026-10-20 (Phase 1: Subsystem 4/7)
 
 ### 🎭 Dynamic Browser Fingerprint Matrix & Stealth Header Engine
 - **Dynamic Browser Fingerprint Matrix (`smart_miner.crawler.fingerprint`):**
@@ -32,7 +32,7 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
-## [1.3.3] - 2026-10-19 (Night 3 / 30)
+## [1.3.3] - 2026-10-19 (Phase 1: Subsystem 3/7)
 
 ### ⚡ Enterprise HTTPX Connection Pooling & Session Lifecycle
 - **Persistent Connection Pool (`smart_miner.crawler.fetcher`):**
@@ -57,7 +57,7 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
-## [1.3.2] - 2026-10-19 (Night 2 / 30)
+## [1.3.2] - 2026-10-19 (Phase 1: Subsystem 2/7)
 
 ### 🛡️ Bounded Streaming & Anti-DoS Transport Shield
 - **Bounded Stream Transport (`smart_miner.crawler.fetcher`):**
@@ -79,7 +79,7 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
-## [1.3.1] - 2026-10-18 (Night 1 / 30)
+## [1.3.1] - 2026-10-18 (Phase 1: Subsystem 1/7)
 
 ### 🛡️ Security & Zero-Trust Transport
 - **SSRF Defense Engine (`smart_miner.crawler.security`):**

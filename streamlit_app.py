@@ -131,7 +131,7 @@ with st.sidebar:
         - **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** Governed Workflow
         """
     )
-    st.caption("Nightly Build Dashboard · v1.3.4 (Night 4)")
+    st.caption("Architecture Dashboard · v1.3.4 (Phase 1: Subsystems 4/7)")
 
 # Main URL Input Area
 col_url, col_btn = st.columns([5, 1])

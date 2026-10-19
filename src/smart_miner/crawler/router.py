@@ -80,6 +80,7 @@ async def fetch_static(
     *,
     allow_private_urls: bool = False,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+    fingerprint: Any = None,
 ) -> str:
     """Compatibility wrapper returning visible text with managed session lifecycle."""
     from .fetcher import PageFetcher
@@ -88,6 +89,7 @@ async def fetch_static(
     async with PageFetcher(
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
+        fingerprint=fingerprint,
     ) as fetcher:
         page = await fetcher.fetch_static(url)
     if barrier_reason(page) or page.status_code >= 400:
@@ -100,6 +102,7 @@ async def fetch_dynamic(
     *,
     allow_private_urls: bool = False,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+    fingerprint: Any = None,
 ) -> str:
     """Compatibility wrapper returning visible text."""
     from .fetcher import PageFetcher
@@ -108,6 +111,7 @@ async def fetch_dynamic(
     page = await PageFetcher(
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
+        fingerprint=fingerprint,
     ).fetch_dynamic(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
@@ -123,6 +127,7 @@ async def route(
     allow_private_urls: bool = False,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
     fetcher: Any = None,
+    fingerprint: Any = None,
 ) -> Dict[str, Any]:
     """v1.2 keys and plain text, plus reusable document and barrier status."""
     from .fetcher import PageFetcher
@@ -137,6 +142,7 @@ async def route(
         browser_timeout_ms=browser_timeout_ms,
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
+        fingerprint=fingerprint,
     )
     return await CrawlOrchestrator(active_fetcher).run(
         url, min_text_length=min_text_length

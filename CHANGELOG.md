@@ -4,6 +4,34 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.3.4] - 2026-10-20 (Night 4 / 30)
+
+### 🎭 Dynamic Browser Fingerprint Matrix & Stealth Header Engine
+- **Dynamic Browser Fingerprint Matrix (`smart_miner.crawler.fingerprint`):**
+  - Architected canonical `BrowserProfile` dataclass encapsulating `user_agent`, `sec_ch_ua`, `sec_ch_ua_mobile`, `sec_ch_ua_platform`, `accept`, `accept_language`, and `viewport`.
+  - Built 5 canonical, production-grade profiles: `chrome_windows`, `chrome_macos`, `edge_windows`, `firefox_windows`, and `safari_macos`.
+  - Realistic weighted profile selection matching real-world browser market share.
+  - Domain session affinity (`session_affinity=True`): maps target domain to a stable fingerprint to prevent suspicious intra-session browser morphing.
+  - Anti-trap consistency validator (`FingerprintEngine.validate_consistency`): dynamically catches and prevents anti-bot canary traps (e.g., Firefox/Safari sending Client Hints `Sec-Ch-Ua`, OS platform string mismatches, and Edge brand header inconsistencies).
+- **Fetcher & Transport Stealth Injection (`smart_miner.crawler.fetcher`):**
+  - Integrated `FingerprintEngine` into `PageFetcher`.
+  - Configurable `fingerprint` profile or `random` selection on fetcher initialization and per-request overrides.
+  - Injected dynamic stealth headers into HTTPX streaming client (`client.stream(..., headers=headers)`).
+  - Passed consistent User-Agent and viewport dimensions down to Playwright browser context when dynamic fallback triggers.
+- **Pipeline & Routing Integration (`smart_miner.crawler.router`, `pipeline.orchestrator`):**
+  - Exposed `fingerprint` argument in `route()`, `fetch_static()`, and `fetch_dynamic()`.
+  - Injected selected fingerprint profile name into pipeline evidence record (`result["routing"]["fingerprint"]`).
+- **Test Suite (`tests/test_fingerprint.py`):**
+  - Added 11 automated unit tests covering profile validity, Client Hints consistency, anti-bot traps, domain session affinity, and fetcher integration.
+  - Regression test suite expanded from 27 to 38 tests (100% PASS in ~0.8s).
+- **Interactive Streamlit Review Dashboard (`streamlit_app.py`):**
+  - Added `🎭 Fingerprint Matrix` badge to header.
+  - Added "Browser Fingerprint" profile selector in sidebar (Chrome, Edge, Firefox, Safari, or Random).
+  - Added dynamic Fingerprint metric column in results bar.
+  - Added engine stealth matrix state to diagnostics inspection tab.
+
+---
+
 ## [1.3.3] - 2026-10-19 (Night 3 / 30)
 
 ### ⚡ Enterprise HTTPX Connection Pooling & Session Lifecycle

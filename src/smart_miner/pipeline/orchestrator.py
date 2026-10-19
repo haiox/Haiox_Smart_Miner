@@ -138,6 +138,7 @@ class CrawlOrchestrator:
             reasons = [failure_reason(exc)]
         timings["total"] = round((perf_counter() - started) * 1000, 2)
         result["routing"] = {
+            "fingerprint": getattr(self.fetcher, "active_profile_name", "chrome_windows"),
             "strategy": strategy if result["success"] else "failed",
             "fallback_used": fallback, "reason_codes": reasons,
             "browser_attempted": fallback or force_dynamic,

@@ -67,14 +67,15 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner v1.3.3 '
-    '<span class="security-badge">🛡️ SSRF & Anti-DoS Shield</span> '
-    '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Connection Pool & HTTP/2</span>'
+    '<div class="main-header">⚡ Haiox Smart Miner v1.3.4 '
+    '<span class="security-badge">🛡️ SSRF Shield</span> '
+    '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Pool</span> '
+    '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span>'
     '</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Persistent Transport, Zero-Trust Defense & Evidence Generation</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Persistent Transport, Dynamic Fingerprinting & Evidence Generation</div>',
     unsafe_allow_html=True,
 )
 
@@ -83,6 +84,12 @@ with st.sidebar:
     st.header("⚙️ Crawler Configuration")
     min_length = st.slider("Min Text Length (Chars)", min_value=100, max_value=2000, value=600, step=50)
     max_size_mb = st.slider("Max Response Size (MB)", min_value=1, max_value=20, value=5, step=1, help="Bounded streaming cutoff to prevent OOM and zip-bomb attacks.")
+    fingerprint_mode = st.selectbox(
+        "Browser Fingerprint",
+        options=["chrome_windows", "chrome_macos", "edge_windows", "firefox_windows", "safari_macos", "random"],
+        index=0,
+        help="Dynamic coherent fingerprinting to defeat anti-bot and WAF heuristics.",
+    )
     prefer_main = st.checkbox("Prefer Main Article Region", value=True)
     force_dynamic = st.checkbox("Force Browser Fallback (Dynamic)", value=False)
     allow_private = st.checkbox("Allow Private URLs (Dev/Test only)", value=False, help="Enable only for local test servers.")
@@ -90,8 +97,8 @@ with st.sidebar:
 
     st.markdown("#### ⚡ Transport & Network Engine")
     st.caption("• **Engine:** HTTPX Persistent Async Connection Pool")
+    st.caption("• **Fingerprint:** Coherent Chrome/Edge/Firefox/Safari Profiles")
     st.caption("• **Limits:** 100 max connections, 20 keep-alive")
-    st.caption("• **Stealth:** Chrome 131 User-Agent & Client Hints")
     st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
 
     st.divider()
@@ -124,7 +131,7 @@ with st.sidebar:
         - **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** Governed Workflow
         """
     )
-    st.caption("Nightly Build Dashboard · v1.3.2 (Night 2)")
+    st.caption("Nightly Build Dashboard · v1.3.4 (Night 4)")
 
 # Main URL Input Area
 col_url, col_btn = st.columns([5, 1])
@@ -165,6 +172,7 @@ if mine_clicked and target_url:
                     wait_selector=wait_selector if wait_selector else None,
                     allow_private_urls=allow_private,
                     max_response_bytes=max_bytes,
+                    fingerprint=fingerprint_mode,
                 )
             )
         except Exception as e:
@@ -201,7 +209,7 @@ if mine_clicked and target_url:
         )
 
     # Metrics Bar
-    m1, m2, m3, m4 = st.columns(4)
+    m1, m2, m3, m4, m5 = st.columns(5)
     with m1:
         st.metric("Status", status.upper(), delta="Accepted" if status == "ok" else "-Rejected",
                   delta_color="normal" if status == "ok" else "inverse")
@@ -215,6 +223,9 @@ if mine_clicked and target_url:
         out_chars = res.get("document", {}).get("output_character_count", 0) if res.get("document") else len(res.get("text", ""))
         compression = f"{((1 - out_chars / in_chars) * 100):.1f}%" if in_chars > 0 else "0.0%"
         st.metric("Noise Removed", compression, help=f"Input: {in_chars:,} chars → Output: {out_chars:,} chars")
+    with m5:
+        active_fp = routing.get("fingerprint", fingerprint_mode)
+        st.metric("Fingerprint", active_fp, help="Browser profile used for stealth headers")
 
     st.divider()
 
@@ -339,4 +350,6 @@ if mine_clicked and target_url:
             "error": res.get("error"),
             "security_shield": "ACTIVE",
             "anti_dos_stream_shield": "ACTIVE",
+            "fingerprint_stealth_matrix": "ACTIVE",
+            "active_fingerprint": routing.get("fingerprint", fingerprint_mode),
         })

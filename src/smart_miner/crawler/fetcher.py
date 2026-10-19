@@ -16,6 +16,9 @@ try:
 except ModuleNotFoundError:
     async_playwright = None
 
+from urllib.parse import urlsplit
+
+from .fingerprint import BrowserProfile, FingerprintEngine, PROFILES
 from .security import validate_url_target
 
 DEFAULT_MAX_RESPONSE_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -23,24 +26,7 @@ DEFAULT_MAX_CONNECTIONS = 100
 DEFAULT_MAX_KEEPALIVE_CONNECTIONS = 20
 DEFAULT_KEEPALIVE_EXPIRY = 30.0
 
-DEFAULT_BROWSER_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/131.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br, zstd",
-    "Sec-Ch-Ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-    "Sec-Ch-Ua-Mobile": "?0",
-    "Sec-Ch-Ua-Platform": '"Windows"',
-    "Sec-Fetch-Dest": "document",
-    "Sec-Fetch-Mode": "navigate",
-    "Sec-Fetch-Site": "none",
-    "Sec-Fetch-User": "?1",
-    "Upgrade-Insecure-Requests": "1",
-}
+DEFAULT_BROWSER_HEADERS = dict(PROFILES["chrome_windows"].headers)
 
 
 @dataclass(frozen=True)
@@ -65,6 +51,8 @@ class PageFetcher:
         keepalive_expiry: float = DEFAULT_KEEPALIVE_EXPIRY,
         headers: dict | None = None,
         http2: bool = True,
+        fingerprint: str | BrowserProfile | None = None,
+        session_affinity: bool = True,
     ):
         if browser_timeout_ms <= 0:
             raise ValueError("browser_timeout_ms must be positive")
@@ -89,15 +77,48 @@ class PageFetcher:
         self.custom_headers = headers or {}
         self.http2 = http2
 
+        # Fingerprint Engine Configuration
+        self.fingerprint_engine = FingerprintEngine()
+        self.fingerprint_mode = fingerprint or "chrome_windows"
+        self.session_affinity = session_affinity
+        self._active_profile: BrowserProfile | None = None
+
     @property
     def is_pool_active(self) -> bool:
         """True if the HTTPX connection pool is active and not closed."""
         return bool(self._client is not None and not getattr(self._client, "is_closed", False))
 
+    def get_headers_for_url(self, url: str = "") -> dict:
+        """Resolve and audit consistent browser headers for the given target URL."""
+        if self.fingerprint_mode == "random":
+            if self.session_affinity and url:
+                domain = urlsplit(url).netloc.split(":")[0] if "://" in url else url
+                profile = self.fingerprint_engine.get_random_profile(seed=domain)
+            else:
+                profile = self.fingerprint_engine.get_random_profile()
+        elif isinstance(self.fingerprint_mode, BrowserProfile):
+            profile = self.fingerprint_mode
+        else:
+            profile = self.fingerprint_engine.get_profile(self.fingerprint_mode)
+
+        self._active_profile = profile
+        return self.fingerprint_engine.build_headers(profile, custom_headers=self.custom_headers)
+
     @property
     def active_headers(self) -> dict:
-        """Effective request headers combining default browser and custom headers."""
-        return {**DEFAULT_BROWSER_HEADERS, **self.custom_headers}
+        """Effective request headers combining current profile and custom headers."""
+        if self._active_profile is not None:
+            return self.fingerprint_engine.build_headers(self._active_profile, custom_headers=self.custom_headers)
+        return self.get_headers_for_url("")
+
+    @property
+    def active_profile_name(self) -> str:
+        """Name of the currently active browser profile."""
+        if self._active_profile is not None:
+            return self._active_profile.name
+        if isinstance(self.fingerprint_mode, BrowserProfile):
+            return self.fingerprint_mode.name
+        return str(self.fingerprint_mode)
 
     async def get_client(self):
         """Acquire or lazily initialize the shared persistent HTTPX client with connection pooling."""
@@ -162,11 +183,16 @@ class PageFetcher:
     async def fetch_static(self, url: str) -> FetchedPage:
         validate_url_target(url, allow_private=self.allow_private_urls)
         client = await self.get_client()
+        req_headers = self.get_headers_for_url(url)
 
         # Use bounded streaming if available to guard against unbounded memory growth
         if hasattr(client, "stream"):
             try:
-                stream_ctx = client.stream("GET", url, timeout=15.0)
+                try:
+                    stream_ctx = client.stream("GET", url, headers=req_headers, timeout=15.0)
+                except TypeError:
+                    stream_ctx = client.stream("GET", url, timeout=15.0)
+
                 async with stream_ctx as response:
                     final_url = str(response.url)
                     if not self.allow_private_urls and final_url != url:
@@ -222,7 +248,11 @@ class PageFetcher:
                 pass
 
         # Fallback path (compatibility for legacy tests or mock setups)
-        response = await client.get(url, timeout=15.0)
+        try:
+            response = await client.get(url, headers=req_headers, timeout=15.0)
+        except TypeError:
+            response = await client.get(url, timeout=15.0)
+
         final_url = str(response.url)
         if not self.allow_private_urls and final_url != url:
             validate_url_target(final_url, allow_private=False)
@@ -232,6 +262,7 @@ class PageFetcher:
         validate_url_target(url, allow_private=self.allow_private_urls)
         if async_playwright is None:
             raise RuntimeError("Install playwright to enable browser fallback")
+        req_headers = self.get_headers_for_url(url)
         async with async_playwright() as playwright:
             browser = await playwright.chromium.launch(
                 headless=True, timeout=self.browser_timeout_ms
@@ -239,7 +270,10 @@ class PageFetcher:
             try:
                 # One deadline includes context creation, navigation and readiness.
                 async with asyncio.timeout(self.browser_timeout_ms / 1000):
-                    context = await browser.new_context()
+                    context = await browser.new_context(
+                        user_agent=req_headers.get("User-Agent"),
+                        extra_http_headers=req_headers,
+                    )
                     page = await context.new_page()
                     response = await page.goto(
                         url, wait_until="domcontentloaded", timeout=self.browser_timeout_ms

@@ -18,6 +18,7 @@ except ModuleNotFoundError:
 
 from urllib.parse import urlsplit
 
+from .dns import DNSResolver
 from .fingerprint import BrowserProfile, FingerprintEngine, PROFILES
 from .retry import RetryConfig, RetryEngine, is_transient_error
 from .security import validate_url_target
@@ -57,6 +58,7 @@ class PageFetcher:
         session_affinity: bool = True,
         retries: int | None = None,
         retry_config: RetryConfig | None = None,
+        dns_resolver: DNSResolver | None = None,
     ):
         if browser_timeout_ms <= 0:
             raise ValueError("browser_timeout_ms must be positive")
@@ -95,6 +97,9 @@ class PageFetcher:
         else:
             self.retry_engine = RetryEngine()
         self.last_retries_count: int = 0
+
+        # DNS Cache & Resolver Configuration
+        self.dns_resolver = dns_resolver or DNSResolver(allow_private_urls=self.allow_private_urls)
 
     @property
     def is_pool_active(self) -> bool:
@@ -205,7 +210,7 @@ class PageFetcher:
                 async with stream_ctx as response:
                     final_url = str(response.url)
                     if not self.allow_private_urls and final_url != url:
-                        validate_url_target(final_url, allow_private=False)
+                        validate_url_target(final_url, allow_private=False, dns_resolver=self.dns_resolver)
 
                     # 1. Content-Type inspection
                     content_type = response.headers.get("content-type", "").lower()
@@ -265,12 +270,14 @@ class PageFetcher:
 
         final_url = str(response.url)
         if not self.allow_private_urls and final_url != url:
-            validate_url_target(final_url, allow_private=False)
+            validate_url_target(final_url, allow_private=False, dns_resolver=self.dns_resolver)
         resp_headers = dict(response.headers) if hasattr(response, "headers") else {}
         return FetchedPage(response.text, final_url, response.status_code, "static", resp_headers)
 
     async def fetch_static(self, url: str) -> FetchedPage:
-        validate_url_target(url, allow_private=self.allow_private_urls)
+        # Validate URL and warm DNS cache
+        validate_url_target(url, allow_private=self.allow_private_urls, dns_resolver=self.dns_resolver)
+
         client = await self.get_client()
         req_headers = self.get_headers_for_url(url)
 

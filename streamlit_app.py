@@ -67,16 +67,17 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner v1.3.5 '
+    '<div class="main-header">⚡ Haiox Smart Miner v1.3.6 '
     '<span class="security-badge">🛡️ SSRF Shield</span> '
     '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Pool</span> '
     '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span> '
-    '<span class="security-badge" style="border-color: #fd7e14; background-color: #331a00; color: #ffc107;">🔁 Jitter Retry</span>'
+    '<span class="security-badge" style="border-color: #fd7e14; background-color: #331a00; color: #ffc107;">🔁 Jitter Retry</span> '
+    '<span class="security-badge" style="border-color: #20c997; background-color: #0b3127; color: #75b798;">🌐 DNS Cache</span>'
     '</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Persistent Transport, Dynamic Fingerprinting & Evidence Generation</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Persistent Transport, DNS Fallback & Evidence Generation</div>',
     unsafe_allow_html=True,
 )
 
@@ -101,6 +102,7 @@ with st.sidebar:
     st.caption("• **Engine:** HTTPX Persistent Async Connection Pool")
     st.caption("• **Fingerprint:** Coherent Chrome/Edge/Firefox/Safari Profiles")
     st.caption("• **Retry:** Exponential Backoff & Full Jitter (429/5xx)")
+    st.caption("• **DNS:** In-Memory TTL Cache with Multi-IP Fast Fallback")
     st.caption("• **Limits:** 100 max connections, 20 keep-alive")
     st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
 
@@ -360,4 +362,6 @@ if mine_clicked and target_url:
             "active_fingerprint": routing.get("fingerprint", fingerprint_mode),
             "retry_jitter_engine": "ACTIVE (Exponential Backoff & Full Jitter)",
             "retries_performed": routing.get("retries", 0),
+            "dns_cache_engine": "ACTIVE (LRU In-Memory + Multi-IP Fallback)",
+            "dns_cache_hits": routing.get("dns_cache_hits", 0),
         })

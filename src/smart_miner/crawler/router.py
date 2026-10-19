@@ -83,6 +83,7 @@ async def fetch_static(
     fingerprint: Any = None,
     retries: int | None = None,
     retry_config: Any = None,
+    dns_resolver: Any = None,
 ) -> str:
     """Compatibility wrapper returning visible text with managed session lifecycle."""
     from .fetcher import PageFetcher
@@ -94,6 +95,7 @@ async def fetch_static(
         fingerprint=fingerprint,
         retries=retries,
         retry_config=retry_config,
+        dns_resolver=dns_resolver,
     ) as fetcher:
         page = await fetcher.fetch_static(url)
     if barrier_reason(page) or page.status_code >= 400:
@@ -109,6 +111,7 @@ async def fetch_dynamic(
     fingerprint: Any = None,
     retries: int | None = None,
     retry_config: Any = None,
+    dns_resolver: Any = None,
 ) -> str:
     """Compatibility wrapper returning visible text."""
     from .fetcher import PageFetcher
@@ -120,6 +123,7 @@ async def fetch_dynamic(
         fingerprint=fingerprint,
         retries=retries,
         retry_config=retry_config,
+        dns_resolver=dns_resolver,
     ).fetch_dynamic(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
@@ -138,6 +142,7 @@ async def route(
     fingerprint: Any = None,
     retries: int | None = None,
     retry_config: Any = None,
+    dns_resolver: Any = None,
 ) -> Dict[str, Any]:
     """v1.2 keys and plain text, plus reusable document and barrier status."""
     from .fetcher import PageFetcher
@@ -155,6 +160,7 @@ async def route(
         fingerprint=fingerprint,
         retries=retries,
         retry_config=retry_config,
+        dns_resolver=dns_resolver,
     )
     return await CrawlOrchestrator(active_fetcher).run(
         url, min_text_length=min_text_length

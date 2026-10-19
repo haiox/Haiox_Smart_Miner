@@ -42,6 +42,7 @@ def validate_url_target(
     allow_private: bool = False,
     allowed_schemes: set[str] | None = None,
     allowed_ports: set[int] | None = None,
+    dns_resolver: object | None = None,
 ) -> str:
     """Validate target URL against SSRF, dangerous schemes and internal networks.
 
@@ -90,6 +91,16 @@ def validate_url_target(
 
     # RFC 2606 reserved test domains used in offline unit test suites
     if hostname == "example.test" or hostname.endswith(".example.test"):
+        return url
+
+    # If an in-memory DNS resolver is provided, route through resolver for cached validation
+    if dns_resolver is not None and hasattr(dns_resolver, "resolve"):
+        try:
+            dns_resolver.resolve(hostname, allow_private=allow_private)
+        except SecurityError:
+            raise
+        except Exception:
+            raise SecurityError("DNS_LOOKUP_FAILED")
         return url
 
     # Resolve hostname to candidate IP addresses (IPv4 & IPv6)

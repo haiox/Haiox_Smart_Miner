@@ -1,5 +1,6 @@
 """HTTP/browser fetching, routing, access-barrier detection and security validation."""
 
+from .dns import DNSCacheEntry, DNSResolver
 from .fingerprint import BrowserProfile, FingerprintEngine, PROFILES
 from .retry import (
     RetryConfig,
@@ -12,6 +13,8 @@ from .security import SecurityError, is_public_ip, validate_url_target
 
 __all__ = [
     "BrowserProfile",
+    "DNSCacheEntry",
+    "DNSResolver",
     "FingerprintEngine",
     "PROFILES",
     "RetryConfig",

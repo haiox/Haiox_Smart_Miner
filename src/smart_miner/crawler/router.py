@@ -81,6 +81,8 @@ async def fetch_static(
     allow_private_urls: bool = False,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
     fingerprint: Any = None,
+    retries: int | None = None,
+    retry_config: Any = None,
 ) -> str:
     """Compatibility wrapper returning visible text with managed session lifecycle."""
     from .fetcher import PageFetcher
@@ -90,6 +92,8 @@ async def fetch_static(
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
         fingerprint=fingerprint,
+        retries=retries,
+        retry_config=retry_config,
     ) as fetcher:
         page = await fetcher.fetch_static(url)
     if barrier_reason(page) or page.status_code >= 400:
@@ -103,6 +107,8 @@ async def fetch_dynamic(
     allow_private_urls: bool = False,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
     fingerprint: Any = None,
+    retries: int | None = None,
+    retry_config: Any = None,
 ) -> str:
     """Compatibility wrapper returning visible text."""
     from .fetcher import PageFetcher
@@ -112,6 +118,8 @@ async def fetch_dynamic(
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
         fingerprint=fingerprint,
+        retries=retries,
+        retry_config=retry_config,
     ).fetch_dynamic(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
@@ -128,6 +136,8 @@ async def route(
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
     fetcher: Any = None,
     fingerprint: Any = None,
+    retries: int | None = None,
+    retry_config: Any = None,
 ) -> Dict[str, Any]:
     """v1.2 keys and plain text, plus reusable document and barrier status."""
     from .fetcher import PageFetcher
@@ -143,6 +153,8 @@ async def route(
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
         fingerprint=fingerprint,
+        retries=retries,
+        retry_config=retry_config,
     )
     return await CrawlOrchestrator(active_fetcher).run(
         url, min_text_length=min_text_length

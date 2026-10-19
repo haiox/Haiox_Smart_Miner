@@ -67,10 +67,11 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner v1.3.4 '
+    '<div class="main-header">⚡ Haiox Smart Miner v1.3.5 '
     '<span class="security-badge">🛡️ SSRF Shield</span> '
     '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Pool</span> '
-    '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span>'
+    '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span> '
+    '<span class="security-badge" style="border-color: #fd7e14; background-color: #331a00; color: #ffc107;">🔁 Jitter Retry</span>'
     '</div>',
     unsafe_allow_html=True,
 )
@@ -90,6 +91,7 @@ with st.sidebar:
         index=0,
         help="Dynamic coherent fingerprinting to defeat anti-bot and WAF heuristics.",
     )
+    max_retries = st.slider("Max Transient Retries", min_value=0, max_value=5, value=3, help="Exponential backoff with full jitter on 429 & 5xx errors.")
     prefer_main = st.checkbox("Prefer Main Article Region", value=True)
     force_dynamic = st.checkbox("Force Browser Fallback (Dynamic)", value=False)
     allow_private = st.checkbox("Allow Private URLs (Dev/Test only)", value=False, help="Enable only for local test servers.")
@@ -98,6 +100,7 @@ with st.sidebar:
     st.markdown("#### ⚡ Transport & Network Engine")
     st.caption("• **Engine:** HTTPX Persistent Async Connection Pool")
     st.caption("• **Fingerprint:** Coherent Chrome/Edge/Firefox/Safari Profiles")
+    st.caption("• **Retry:** Exponential Backoff & Full Jitter (429/5xx)")
     st.caption("• **Limits:** 100 max connections, 20 keep-alive")
     st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
 
@@ -131,7 +134,7 @@ with st.sidebar:
         - **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** Governed Workflow
         """
     )
-    st.caption("Architecture Dashboard · v1.3.4 (Phase 1: Subsystems 4/7)")
+    st.caption("Architecture Dashboard · v1.3.5 (Phase 1: Subsystems 5/7)")
 
 # Main URL Input Area
 col_url, col_btn = st.columns([5, 1])
@@ -173,6 +176,7 @@ if mine_clicked and target_url:
                     allow_private_urls=allow_private,
                     max_response_bytes=max_bytes,
                     fingerprint=fingerprint_mode,
+                    retries=max_retries,
                 )
             )
         except Exception as e:
@@ -209,7 +213,7 @@ if mine_clicked and target_url:
         )
 
     # Metrics Bar
-    m1, m2, m3, m4, m5 = st.columns(5)
+    m1, m2, m3, m4, m5, m6 = st.columns(6)
     with m1:
         st.metric("Status", status.upper(), delta="Accepted" if status == "ok" else "-Rejected",
                   delta_color="normal" if status == "ok" else "inverse")
@@ -226,6 +230,8 @@ if mine_clicked and target_url:
     with m5:
         active_fp = routing.get("fingerprint", fingerprint_mode)
         st.metric("Fingerprint", active_fp, help="Browser profile used for stealth headers")
+    with m6:
+        st.metric("Retries", routing.get("retries", 0), help="Transient failure retries performed")
 
     st.divider()
 
@@ -352,4 +358,6 @@ if mine_clicked and target_url:
             "anti_dos_stream_shield": "ACTIVE",
             "fingerprint_stealth_matrix": "ACTIVE",
             "active_fingerprint": routing.get("fingerprint", fingerprint_mode),
+            "retry_jitter_engine": "ACTIVE (Exponential Backoff & Full Jitter)",
+            "retries_performed": routing.get("retries", 0),
         })

@@ -19,6 +19,7 @@ except ModuleNotFoundError:
 from urllib.parse import urlsplit
 
 from .fingerprint import BrowserProfile, FingerprintEngine, PROFILES
+from .retry import RetryConfig, RetryEngine, is_transient_error
 from .security import validate_url_target
 
 DEFAULT_MAX_RESPONSE_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -35,6 +36,7 @@ class FetchedPage:
     source_url: str
     status_code: int = 200
     strategy: str = "static"
+    response_headers: dict | None = None
 
 
 class PageFetcher:
@@ -53,6 +55,8 @@ class PageFetcher:
         http2: bool = True,
         fingerprint: str | BrowserProfile | None = None,
         session_affinity: bool = True,
+        retries: int | None = None,
+        retry_config: RetryConfig | None = None,
     ):
         if browser_timeout_ms <= 0:
             raise ValueError("browser_timeout_ms must be positive")
@@ -83,10 +87,19 @@ class PageFetcher:
         self.session_affinity = session_affinity
         self._active_profile: BrowserProfile | None = None
 
+        # Retry Engine Configuration
+        if retry_config is not None:
+            self.retry_engine = RetryEngine(retry_config)
+        elif retries is not None:
+            self.retry_engine = RetryEngine(RetryConfig(max_retries=retries))
+        else:
+            self.retry_engine = RetryEngine()
+        self.last_retries_count: int = 0
+
     @property
     def is_pool_active(self) -> bool:
         """True if the HTTPX connection pool is active and not closed."""
-        return bool(self._client is not None and not getattr(self._client, "is_closed", False))
+        return bool(self._client is not None and getattr(self._client, "is_closed", False) is not True)
 
     def get_headers_for_url(self, url: str = "") -> dict:
         """Resolve and audit consistent browser headers for the given target URL."""
@@ -122,7 +135,7 @@ class PageFetcher:
 
     async def get_client(self):
         """Acquire or lazily initialize the shared persistent HTTPX client with connection pooling."""
-        if self._client is not None and not getattr(self._client, "is_closed", False):
+        if self._client is not None and getattr(self._client, "is_closed", False) is not True:
             return self._client
 
         if httpx is None:
@@ -169,7 +182,7 @@ class PageFetcher:
     async def close(self) -> None:
         """Close the underlying connection pool if owned by this instance."""
         if self._owns_client and self._client is not None:
-            if hasattr(self._client, "aclose") and not getattr(self._client, "is_closed", False):
+            if hasattr(self._client, "aclose") and getattr(self._client, "is_closed", False) is not True:
                 await self._client.aclose()
             self._client = None
 
@@ -180,11 +193,7 @@ class PageFetcher:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
 
-    async def fetch_static(self, url: str) -> FetchedPage:
-        validate_url_target(url, allow_private=self.allow_private_urls)
-        client = await self.get_client()
-        req_headers = self.get_headers_for_url(url)
-
+    async def _fetch_single_static(self, client, url: str, req_headers: dict) -> FetchedPage:
         # Use bounded streaming if available to guard against unbounded memory growth
         if hasattr(client, "stream"):
             try:
@@ -242,7 +251,8 @@ class PageFetcher:
                     else:
                         html_text = getattr(response, "text", "")
 
-                    return FetchedPage(html_text, final_url, response.status_code, "static")
+                    resp_headers = dict(response.headers) if hasattr(response, "headers") else {}
+                    return FetchedPage(html_text, final_url, response.status_code, "static", resp_headers)
             except (AttributeError, TypeError):
                 # In case of mock or client without stream context, fall through to client.get
                 pass
@@ -256,7 +266,33 @@ class PageFetcher:
         final_url = str(response.url)
         if not self.allow_private_urls and final_url != url:
             validate_url_target(final_url, allow_private=False)
-        return FetchedPage(response.text, final_url, response.status_code, "static")
+        resp_headers = dict(response.headers) if hasattr(response, "headers") else {}
+        return FetchedPage(response.text, final_url, response.status_code, "static", resp_headers)
+
+    async def fetch_static(self, url: str) -> FetchedPage:
+        validate_url_target(url, allow_private=self.allow_private_urls)
+        client = await self.get_client()
+        req_headers = self.get_headers_for_url(url)
+
+        self.last_retries_count = 0
+        max_retries = self.retry_engine.config.max_retries
+
+        for attempt in range(max_retries + 1):
+            try:
+                page = await self._fetch_single_static(client, url, req_headers)
+                if (
+                    self.retry_engine.should_retry_status(page.status_code)
+                    and attempt < max_retries
+                ):
+                    self.last_retries_count += 1
+                    await self.retry_engine.sleep_backoff(attempt, page.response_headers)
+                    continue
+                return page
+            except Exception as exc:
+                if not is_transient_error(exc) or attempt >= max_retries:
+                    raise
+                self.last_retries_count += 1
+                await self.retry_engine.sleep_backoff(attempt)
 
     async def fetch_dynamic(self, url: str) -> FetchedPage:
         validate_url_target(url, allow_private=self.allow_private_urls)

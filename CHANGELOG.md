@@ -4,6 +4,30 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.3.5] - 2026-10-20 (Phase 1: Subsystem 5/7)
+
+### 🔁 Fault-Tolerant Retry Engine, Exponential Backoff & Full Jitter
+- **Fault-Tolerant Retry Engine (`smart_miner.crawler.retry`):**
+  - Architected `RetryEngine` and `RetryConfig` implementing exponential backoff with Full Jitter (AWS architecture recommendation).
+  - Eliminates the Thundering Herd problem on rate-limited endpoints and temporary server overloads by uniformly randomizing sleep intervals between zero and the exponential ceiling.
+  - Automatic handling and retry of transient HTTP status codes: `429 Too Many Requests`, `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, and `504 Gateway Timeout`.
+  - Intelligent server `Retry-After` header parser: supports both integer seconds and RFC 2822 / RFC 7231 HTTP-date formats with configurable ceiling clamps.
+  - Exception classifier `is_transient_error()`: distinguishes transient socket resets, pool timeouts, and connection errors from non-retryable fatal errors (e.g. `SecurityError`, `PAGE_TOO_LARGE`, `UNSUPPORTED_CONTENT_TYPE`).
+- **Transport & Pipeline Integration (`smart_miner.crawler.fetcher`, `router`, `pipeline.orchestrator`):**
+  - Seamlessly wrapped `PageFetcher.fetch_static` with the retry loop while strictly preserving bounded streaming cutoffs.
+  - Exposed `retries` and `retry_config` parameters in `route()`, `fetch_static()`, and `fetch_dynamic()`.
+  - Injected `retries` count into the orchestrator routing decision (`result["routing"]["retries"]`).
+- **Automated Test Suite (`tests/test_retry.py`):**
+  - Added 12 comprehensive unit and integration tests covering exponential math, Full Jitter bounds, `Retry-After` date/seconds parsing, 429 recovery, 503 exhaustion, 404 bypass, and network connection resets.
+  - Regression test suite expanded from 38 to **50 automated offline tests** (100% PASS in ~1.2s).
+- **Interactive Review Dashboard (`streamlit_app.py`):**
+  - Added `🔁 Jitter Retry` badge to header.
+  - Added "Max Transient Retries" slider in sidebar.
+  - Added real-time Retries metric column in the results bar.
+  - Added retry engine state and count to the diagnostics tab.
+
+---
+
 ## [1.3.4] - 2026-10-20 (Phase 1: Subsystem 4/7)
 
 ### 🎭 Dynamic Browser Fingerprint Matrix & Stealth Header Engine

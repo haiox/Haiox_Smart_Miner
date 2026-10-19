@@ -6,8 +6,8 @@
 ![HTTPX](https://img.shields.io/badge/HTTPX-HTTP_fetch-3B82F6?style=flat-square)
 ![Playwright](https://img.shields.io/badge/Playwright-browser_fallback-2EAD33?style=flat-square&logo=playwright)
 ![Pydantic](https://img.shields.io/badge/Pydantic-schema_validation-E92063?style=flat-square&logo=pydantic)
-![Phase](https://img.shields.io/badge/Phase_1-Network_Shield_(4%2F7)-blue?style=flat-square)
-![Release](https://img.shields.io/badge/Release-v1.3.4-00C853?style=flat-square)
+![Phase](https://img.shields.io/badge/Phase_1-Network_Shield_(5%2F7)-blue?style=flat-square)
+![Release](https://img.shields.io/badge/Release-v1.3.5-00C853?style=flat-square)
 ![MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)
 
 Smart Miner fetches ordinary pages with HTTPX, evaluates the content, and uses
@@ -23,7 +23,7 @@ provide; the core itself makes **no LLM call** and requires **no API key**.
 [Try the hosted dashboard](https://haiox-smart-miner-review.streamlit.app/) ·
 Or run the local review dashboard with `streamlit run streamlit_app.py`.
 
-> **v1.3.4 · Phase 1: The Network Shield (Subsystems 4/7 complete).** Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
+> **v1.3.5 · Phase 1: The Network Shield (Subsystems 5/7 complete).** Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
 
 ## Install
 

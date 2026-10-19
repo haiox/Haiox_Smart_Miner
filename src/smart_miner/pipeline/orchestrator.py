@@ -142,6 +142,7 @@ class CrawlOrchestrator:
             "strategy": strategy if result["success"] else "failed",
             "fallback_used": fallback, "reason_codes": reasons,
             "browser_attempted": fallback or force_dynamic,
+            "retries": getattr(self.fetcher, "last_retries_count", 0),
             "visible_character_count": len(result["text"].strip()), "timing_ms": timings,
         }
         return result

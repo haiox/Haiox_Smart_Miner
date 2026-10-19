@@ -67,11 +67,14 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner Review <span class="security-badge">🛡️ SSRF & Anti-DoS Shield Active</span></div>',
+    '<div class="main-header">⚡ Haiox Smart Miner v1.3.3 '
+    '<span class="security-badge">🛡️ SSRF & Anti-DoS Shield</span> '
+    '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Connection Pool & HTTP/2</span>'
+    '</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Bounded Transport, Zero-Trust Defense & Evidence Generation</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Persistent Transport, Zero-Trust Defense & Evidence Generation</div>',
     unsafe_allow_html=True,
 )
 
@@ -84,6 +87,12 @@ with st.sidebar:
     force_dynamic = st.checkbox("Force Browser Fallback (Dynamic)", value=False)
     allow_private = st.checkbox("Allow Private URLs (Dev/Test only)", value=False, help="Enable only for local test servers.")
     wait_selector = st.text_input("Custom Wait Selector (Optional)", value="")
+
+    st.markdown("#### ⚡ Transport & Network Engine")
+    st.caption("• **Engine:** HTTPX Persistent Async Connection Pool")
+    st.caption("• **Limits:** 100 max connections, 20 keep-alive")
+    st.caption("• **Stealth:** Chrome 131 User-Agent & Client Hints")
+    st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
 
     st.divider()
     st.header("🤖 OpenRouter AI Extraction (Optional)")

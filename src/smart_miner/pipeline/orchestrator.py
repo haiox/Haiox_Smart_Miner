@@ -1,6 +1,9 @@
 from time import perf_counter
 
-import httpx
+try:
+    import httpx
+except ModuleNotFoundError:
+    httpx = None
 
 if __package__ == "pipeline":
     from crawler.barriers import barrier_reason
@@ -10,7 +13,10 @@ else:
     from ..crawler.barriers import barrier_reason
     from ..crawler.fetcher import PageFetcher
     from ..crawler.router import evaluate_content_quality, _extract_visible_text
-from .document import DocumentCleaner
+try:
+    from .document import DocumentCleaner
+except ModuleNotFoundError:
+    DocumentCleaner = None
 
 
 SAFE_FAILURE_CODES = {
@@ -28,10 +34,11 @@ def failure_reason(exc):
         code = str(exc)
         if code in SAFE_FAILURE_CODES or code.startswith("HTTP_STATUS_"):
             return code
-    if isinstance(exc, httpx.TimeoutException):
-        return "FETCH_TIMEOUT"
-    if isinstance(exc, httpx.ConnectError):
-        return "FETCH_CONNECTION_ERROR"
+    if httpx is not None:
+        if isinstance(exc, httpx.TimeoutException):
+            return "FETCH_TIMEOUT"
+        if isinstance(exc, httpx.ConnectError):
+            return "FETCH_CONNECTION_ERROR"
     if isinstance(exc, TimeoutError):
         return "BROWSER_TIMEOUT"
     # Playwright wraps navigation failures in its own Error class. Keep the
@@ -46,7 +53,7 @@ def failure_reason(exc):
 class CrawlOrchestrator:
     def __init__(self, fetcher=None, cleaner=None):
         self.fetcher = fetcher or PageFetcher()
-        self.cleaner = cleaner or DocumentCleaner()
+        self.cleaner = cleaner or (DocumentCleaner() if DocumentCleaner is not None else None)
 
     async def run(self, url, min_text_length=600, extractor=None, *,
                   force_dynamic=False, require_clean_content=False):
@@ -115,11 +122,12 @@ class CrawlOrchestrator:
                     reasons = ["STATIC_QUALITY_ACCEPTED"]
                 elif force_dynamic:
                     reasons = ["BROWSER_REQUESTED"]
-                document = document or self.cleaner.clean(page)
-                if require_clean_content:
+                if self.cleaner is not None:
+                    document = document or self.cleaner.clean(page)
+                if require_clean_content and document is not None:
                     text = document.visible_text
                 result.update(success=True, status="ok", text=text,
-                              document=document.model_dump())
+                              document=document.model_dump() if document else None)
                 if extractor is not None:
                     extracted = await extractor.extract(document)
                     result["extraction"] = extracted.model_dump()

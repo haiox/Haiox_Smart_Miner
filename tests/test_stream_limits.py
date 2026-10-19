@@ -33,8 +33,8 @@ class StreamLimitsTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):
             PageFetcher(max_response_bytes=-1024)
 
-    @patch("smart_miner.crawler.fetcher.httpx.AsyncClient")
-    async def test_unsupported_binary_mime_types_rejected(self, mock_client_cls):
+    @patch("smart_miner.crawler.fetcher.httpx")
+    async def test_unsupported_binary_mime_types_rejected(self, mock_httpx):
         unsupported_types = [
             "image/png",
             "image/jpeg",
@@ -46,43 +46,46 @@ class StreamLimitsTests(unittest.IsolatedAsyncioTestCase):
         ]
         for mime in unsupported_types:
             with self.subTest(mime=mime):
-                client = AsyncMock()
+                client = MagicMock()
+                client.is_closed = False
                 mock_resp = MockStreamResponse(
                     [b"binary data"], headers={"content-type": mime}
                 )
                 client.stream.return_value = mock_resp
-                mock_client_cls.return_value.__aenter__.return_value = client
+                mock_httpx.AsyncClient.return_value = client
 
                 fetcher = PageFetcher(allow_private_urls=True)
                 with self.assertRaises(ValueError) as ctx:
                     await fetcher.fetch_static("https://example.test/file")
                 self.assertEqual(str(ctx.exception), "UNSUPPORTED_CONTENT_TYPE")
 
-    @patch("smart_miner.crawler.fetcher.httpx.AsyncClient")
-    async def test_oversized_content_length_aborts_immediately(self, mock_client_cls):
-        client = AsyncMock()
+    @patch("smart_miner.crawler.fetcher.httpx")
+    async def test_oversized_content_length_aborts_immediately(self, mock_httpx):
+        client = MagicMock()
+        client.is_closed = False
         # Header declares 10 MB, fetcher limit is 1 MB
         mock_resp = MockStreamResponse(
             [], headers={"content-type": "text/html", "content-length": str(10 * 1024 * 1024)}
         )
         client.stream.return_value = mock_resp
-        mock_client_cls.return_value.__aenter__.return_value = client
+        mock_httpx.AsyncClient.return_value = client
 
         fetcher = PageFetcher(allow_private_urls=True, max_response_bytes=1024 * 1024)
         with self.assertRaises(ValueError) as ctx:
             await fetcher.fetch_static("https://example.test/huge")
         self.assertEqual(str(ctx.exception), "PAGE_TOO_LARGE")
 
-    @patch("smart_miner.crawler.fetcher.httpx.AsyncClient")
-    async def test_chunked_stream_cutoff_when_threshold_exceeded(self, mock_client_cls):
+    @patch("smart_miner.crawler.fetcher.httpx")
+    async def test_chunked_stream_cutoff_when_threshold_exceeded(self, mock_httpx):
         # 3 chunks of 500 KB (total 1.5 MB), without Content-Length header
         chunk = b"A" * (500 * 1024)
         mock_resp = MockStreamResponse(
             [chunk, chunk, chunk], headers={"content-type": "text/html"}
         )
-        client = AsyncMock()
+        client = MagicMock()
+        client.is_closed = False
         client.stream.return_value = mock_resp
-        mock_client_cls.return_value.__aenter__.return_value = client
+        mock_httpx.AsyncClient.return_value = client
 
         # Limit is 1 MB, chunk 3 will exceed and abort
         fetcher = PageFetcher(allow_private_urls=True, max_response_bytes=1024 * 1024)
@@ -90,16 +93,17 @@ class StreamLimitsTests(unittest.IsolatedAsyncioTestCase):
             await fetcher.fetch_static("https://example.test/stream")
         self.assertEqual(str(ctx.exception), "PAGE_TOO_LARGE")
 
-    @patch("smart_miner.crawler.fetcher.httpx.AsyncClient")
-    async def test_safe_content_within_limits_succeeds(self, mock_client_cls):
+    @patch("smart_miner.crawler.fetcher.httpx")
+    async def test_safe_content_within_limits_succeeds(self, mock_httpx):
         html_bytes = b"<html><body><h1>Valid Page</h1><p>Useful content</p></body></html>"
         mock_resp = MockStreamResponse(
             [html_bytes],
             headers={"content-type": "text/html; charset=utf-8", "content-length": str(len(html_bytes))},
         )
-        client = AsyncMock()
+        client = MagicMock()
+        client.is_closed = False
         client.stream.return_value = mock_resp
-        mock_client_cls.return_value.__aenter__.return_value = client
+        mock_httpx.AsyncClient.return_value = client
 
         fetcher = PageFetcher(allow_private_urls=True, max_response_bytes=1024 * 1024)
         page = await fetcher.fetch_static("https://example.test/page")

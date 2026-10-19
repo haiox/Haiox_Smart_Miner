@@ -81,14 +81,15 @@ async def fetch_static(
     allow_private_urls: bool = False,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
 ) -> str:
-    """Compatibility wrapper returning visible text."""
+    """Compatibility wrapper returning visible text with managed session lifecycle."""
     from .fetcher import PageFetcher
     from .barriers import barrier_reason
 
-    page = await PageFetcher(
+    async with PageFetcher(
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
-    ).fetch_static(url)
+    ) as fetcher:
+        page = await fetcher.fetch_static(url)
     if barrier_reason(page) or page.status_code >= 400:
         raise ValueError("Page blocked or HTTP error")
     return _extract_visible_text(page.html)
@@ -121,6 +122,7 @@ async def route(
     browser_timeout_ms: int = 30000,
     allow_private_urls: bool = False,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+    fetcher: Any = None,
 ) -> Dict[str, Any]:
     """v1.2 keys and plain text, plus reusable document and barrier status."""
     from .fetcher import PageFetcher
@@ -129,12 +131,13 @@ async def route(
         from pipeline.orchestrator import CrawlOrchestrator
     else:
         from ..pipeline.orchestrator import CrawlOrchestrator
-    fetcher = PageFetcher(
+
+    active_fetcher = fetcher or PageFetcher(
         wait_selector=wait_selector,
         browser_timeout_ms=browser_timeout_ms,
         allow_private_urls=allow_private_urls,
         max_response_bytes=max_response_bytes,
     )
-    return await CrawlOrchestrator(fetcher).run(
+    return await CrawlOrchestrator(active_fetcher).run(
         url, min_text_length=min_text_length
     )

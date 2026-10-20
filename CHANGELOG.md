@@ -4,6 +4,32 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.5.2] - 2026-10-21 (Phase 2: Subsystem 9/15)
+
+### 📊 Advanced Table & Tabular Data Markdown Normalizer
+- **Advanced Table Normalizer Engine (`smart_miner.pipeline.tables`):**
+  - Architected `TableNormalizer` and `TableData` implementing full 2D grid matrix expansion for complex HTML tables.
+  - Seamless handling of `colspan` and `rowspan` cell mergers by tracking occupied coordinates across rows and propagating values into spanned grid cells.
+  - Pipe delimiter escaping (`\|`) to strictly prevent Markdown column misalignment or extra column injection.
+  - Intra-cell whitespace normalization: replaces `<br>` with line continuations/spaces and collapses multiline text into single compact strings.
+  - Support for `<caption>`, `<thead>`, `<tbody>`, and `<tfoot>` sections.
+  - Nested table extraction: cleanly resolves embedded tables within parent cells into inline GFM representations.
+  - Structured data export: provided `.to_records()` method converting normalized tabular rows into a list of key-value dictionaries mapped by column header names (with automatic deduplication of identical header labels).
+- **Pipeline Integration (`smart_miner.pipeline.document`):**
+  - Integrated `TableNormalizer` directly into `DocumentCleaner.clean()`.
+  - Added optional `normalize_tables=True` parameter to `DocumentCleaner` with automatic replacement of raw HTML table blocks with clean GFM Markdown.
+  - Added typed `tables: list[TableData]` attribute to `CleanDocument` Pydantic model for downstream consumption by `Haiox MultiAgent` and `Orchestrator`.
+- **Package Exports (`smart_miner.__init__` & `smart_miner.pipeline.__init__`):**
+  - Exposed `TableNormalizer` and `TableData` as first-class public symbols.
+- **Test Suite Expansion (`tests/test_tables.py`):**
+  - Added 10 rigorous unit and integration tests covering simple tables, multi-column `colspan`, multi-row `rowspan`, pipe character escaping, table captions, nested tables, `.to_records()` dictionary mapping, and end-to-end `DocumentCleaner` pipeline integration.
+  - Full test suite expanded from 104 to **114 automated tests** (100% PASS in ~4.1s).
+- **Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.5.2` with `📊 Table Normalizer (Subsystem 9/15)` header badge.
+  - Added `table_normalizer: ACTIVE` and `tables_extracted` counter to diagnostics panel.
+
+---
+
 ## [1.5.1] - 2026-10-21 (Phase 2: Subsystem 8/15)
 
 ### 🧹 High-Performance AST HTML Cleaner & Noise Stripper

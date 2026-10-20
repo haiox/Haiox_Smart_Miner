@@ -8,8 +8,10 @@ from pydantic import BaseModel, Field
 
 try:
     from .ast_cleaner import ASTCleaner, ASTCleanReport
+    from .tables import TableNormalizer, TableData
 except ImportError:
     from ast_cleaner import ASTCleaner, ASTCleanReport
+    from tables import TableNormalizer, TableData
 
 
 class CleanDocument(BaseModel):
@@ -22,6 +24,7 @@ class CleanDocument(BaseModel):
     input_character_count: int
     output_character_count: int
     noise_reduction_percentage: float = 0.0
+    tables: list[TableData] = Field(default_factory=list)
 
     def extraction_text(self):
         text = f"Source: {self.source_url}\n"
@@ -67,9 +70,18 @@ def structured_data_markdown(items):
 
 
 class DocumentCleaner:
-    def __init__(self, *, prefer_main: bool = False, ast_cleaner: ASTCleaner | None = None):
+    def __init__(
+        self,
+        *,
+        prefer_main: bool = False,
+        ast_cleaner: ASTCleaner | None = None,
+        table_normalizer: TableNormalizer | None = None,
+        normalize_tables: bool = False,
+    ):
         self.prefer_main = prefer_main
         self.ast_cleaner = ast_cleaner or ASTCleaner()
+        self.table_normalizer = table_normalizer or TableNormalizer()
+        self.normalize_tables = normalize_tables
 
     def clean(self, page, *, structured_fallback=True):
         if __package__ == "pipeline":
@@ -129,11 +141,17 @@ class DocumentCleaner:
                 node.decompose()
             seen.add(signature)
         visible = soup.get_text(" ", strip=True)
+        structured_tables = self.table_normalizer.extract_all_tables(soup)
         tables = []
         for table in soup.find_all("table"):
             if table.find_parent("table"):
                 continue
-            if table.select("[rowspan], [colspan], table") or "|" in str(table):
+            if self.normalize_tables:
+                parsed_table = self.table_normalizer.parse_table(table)
+                marker = f"SMARTMINERTABLE{len(tables)}PLACEHOLDER"
+                tables.append((marker, parsed_table.markdown))
+                table.replace_with(marker)
+            elif table.select("[rowspan], [colspan], table") or "|" in str(table):
                 # Markdown pipe tables cannot represent merged/nested cells.
                 for node in [table, *table.find_all(True)]:
                     node.attrs = {k: v for k, v in node.attrs.items()
@@ -159,6 +177,7 @@ class DocumentCleaner:
                                  markdown=markdown, visible_text=visible, json_ld=json_ld,
                                  warnings=warnings, input_character_count=len(page.html),
                                  output_character_count=0,
-                                 noise_reduction_percentage=clean_report.noise_reduction_percentage)
+                                 noise_reduction_percentage=clean_report.noise_reduction_percentage,
+                                 tables=structured_tables)
         document.output_character_count = len(document.extraction_text())
         return document

@@ -76,6 +76,39 @@ class DNSResolver:
         self.hits_count += 1
         return list(entry.ip_addresses)
 
+    def set(
+        self,
+        hostname: str,
+        ip_addresses: Sequence[str],
+        ttl: float | None = None,
+        *,
+        allow_private: bool | None = None,
+    ) -> list[str]:
+        """Manually seed or warm the cache for a given hostname."""
+        norm_host = hostname.strip().lower()
+        permit_private = self.allow_private_urls if allow_private is None else allow_private
+
+        valid_ips: list[str] = []
+        for ip in ip_addresses:
+            if permit_private or is_public_ip(ip):
+                valid_ips.append(ip)
+
+        if not valid_ips:
+            raise SecurityError("NON_PUBLIC_ADDRESS")
+
+        if len(self._cache) >= self.max_entries and norm_host not in self._cache:
+            oldest_key = next(iter(self._cache))
+            del self._cache[oldest_key]
+
+        entry_ttl = self.ttl if ttl is None else ttl
+        self._cache[norm_host] = DNSCacheEntry(
+            hostname=norm_host,
+            ip_addresses=valid_ips,
+            cached_at=time.time(),
+            ttl=entry_ttl,
+        )
+        return list(valid_ips)
+
     def resolve(
         self,
         hostname: str,

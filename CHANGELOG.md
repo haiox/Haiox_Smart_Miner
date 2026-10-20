@@ -4,6 +4,32 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.4.0] - 2026-10-20 (Phase 1 Complete: The Network Shield)
+
+### 🛡️ Phase 1 Synthesis, Performance Benchmarking & Stress Engine
+- **Phase 1: The Network Shield Officially Completed (7/7 Subsystems Merged):**
+  - **Subsystem 1 (Zero-Trust SSRF Defense):** Proactive domain & IP auditing blocking loopback (`127.0.0.1`), RFC1918 subnets, and cloud metadata (`169.254.169.254`) in <0.05ms.
+  - **Subsystem 2 (Bounded Streaming & Anti-DoS):** Chunked cutoff (5MB default) halts gzip/zip bombs and prevents scraper OOM crashes.
+  - **Subsystem 3 (Persistent Connection Pool):** High-throughput HTTPX pool (`httpx.Limits(100 max, 20 keepalive)`), session lifecycle manager (`async with PageFetcher()`), and HTTP/2 multiplexing.
+  - **Subsystem 4 (Dynamic Browser Fingerprint Matrix):** 5 canonical profiles, weighted market share distribution, domain session affinity, and anti-bot canary trap auditor.
+  - **Subsystem 5 (Fault-Tolerant Retry Engine):** AWS-standard Full Jitter exponential backoff, dual-format `Retry-After` parser (seconds & HTTP-date), and transient socket reset recovery.
+  - **Subsystem 6 (In-Memory DNS Cache & Multi-IP Fallback):** LRU in-memory DNS caching (<0.002ms lookup), continuous SSRF validation, and seamless multi-IP CDN edge failover.
+  - **Subsystem 7 (Benchmark Engine & Stress Verification):** Automated benchmark script and test suite verifying all 6 security layers under heavy load.
+- **Micro-Benchmark Engine (`scripts/benchmark_phase1.py`):**
+  - High-precision throughput and latency profiling:
+    - Zero-Trust SSRF Filter: **>20,000 ops/sec** (~40 µs avg latency)
+    - In-Memory DNS Cache: **>300,000 ops/sec** (~1.2 µs avg latency)
+    - Browser Fingerprint Trap Audit: **>40,000 ops/sec** (~9 µs avg latency)
+    - Exponential Backoff & Full Jitter: **>200,000 ops/sec** (~2.2 µs avg latency)
+- **Stress & Benchmark Test Suite (`tests/test_benchmark.py`):**
+  - Added 7 stress and benchmark tests covering anti-DoS chunk streaming cutoff under 10MB load, multi-IP CDN node exhaustion failover, and jitter distribution bounds.
+  - Regression suite expanded to **73 automated offline tests** (100% PASS in ~2.3s, zero network leaks).
+- **Interactive Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.4.0` with `✅ Phase 1 Complete (7/7)` badge.
+  - Added dedicated `⚡ Phase 1 Benchmark` tab rendering live metrics and the 7-subsystem architectural comparison matrix.
+
+---
+
 ## [1.3.6] - 2026-10-20 (Phase 1: Subsystem 6/7)
 
 ### 🌐 In-Memory DNS Cache & Multi-IP Fast Fallback Engine

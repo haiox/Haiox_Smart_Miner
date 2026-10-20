@@ -67,8 +67,9 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner v1.4.0 '
+    '<div class="main-header">⚡ Haiox Smart Miner v1.5.1 '
     '<span class="security-badge" style="border-color: #00c853; background-color: #082914; color: #55f79a;">✅ Phase 1 Complete (7/7)</span> '
+    '<span class="security-badge" style="border-color: #0dcaf0; background-color: #052c38; color: #6edff6;">🧹 AST Cleaner (Subsystem 8/15)</span> '
     '<span class="security-badge">🛡️ SSRF Shield</span> '
     '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Pool</span> '
     '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span> '
@@ -78,7 +79,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox Agent Trilogy · Phase 1 Complete (73/73 Tests · Zero-Trust SSRF, Stream Caps & Memory DNS)</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox AI Trilogy · Phase 2 Active (104/104 Tests · AST Noise Stripper & Token Minimization)</div>',
     unsafe_allow_html=True,
 )
 
@@ -100,14 +101,14 @@ with st.sidebar:
     wait_selector = st.text_input("Custom Wait Selector (Optional)", value="")
 
     st.markdown("#### ⚡ Transport & Network Engine")
-    st.caption("• **Status:** Phase 1 Complete (7/7 Subsystems)")
-    st.caption("• **Engine:** HTTPX Persistent Async Connection Pool")
+    st.caption("• **Engine:** AST DOM Cleaner + HTTPX Connection Pool")
+    st.caption("• **Status:** Phase 2 Active (Subsystems 8/15)")
     st.caption("• **Fingerprint:** Coherent Chrome/Edge/Firefox/Safari Profiles")
     st.caption("• **Retry:** Exponential Backoff & Full Jitter (429/5xx)")
     st.caption("• **DNS:** In-Memory TTL Cache with Multi-IP Fast Fallback")
     st.caption("• **Limits:** 100 max connections, 20 keep-alive")
     st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
-    st.caption("• **Benchmark:** 73/73 Tests PASS · <0.05ms DNS Cache")
+    st.caption("• **Tests:** 104/104 Tests PASS · Zero Leaks")
 
     st.divider()
     st.header("🤖 OpenRouter AI Extraction (Optional)")
@@ -370,6 +371,8 @@ if mine_clicked and target_url:
             "retries_performed": routing.get("retries", 0),
             "dns_cache_engine": "ACTIVE (LRU In-Memory + Multi-IP Fallback)",
             "dns_cache_hits": routing.get("dns_cache_hits", 0),
+            "ast_noise_cleaner": "ACTIVE (Cookie Banners, Ads, Inline Styles, Event Handlers Stripped)",
+            "dom_noise_reduction": f"{res.get('document', {}).get('noise_reduction_percentage', 0.0)}%",
         })
 
     with t_benchmark:

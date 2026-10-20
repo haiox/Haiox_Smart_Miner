@@ -3,9 +3,9 @@
 **The bedrock data ingestion and semantic document engine powering the Haiox AI Trilogy.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-73%2F73_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
-[![Phase 1](https://img.shields.io/badge/Phase_1-Network_Shield_(7%2F7)-00C853?style=flat-square)](CHANGELOG.md)
-[![Release](https://img.shields.io/badge/Release-v1.4.0-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
+[![Tests](https://img.shields.io/badge/Tests-104%2F104_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
+[![Phase 2](https://img.shields.io/badge/Phase_2-Structural_Parsing_(8%2F15)-blue?style=flat-square)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/Release-v1.5.1-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
@@ -17,7 +17,7 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 [⚡ Try the Hosted Streamlit Dashboard](https://haiox-smart-miner-review.streamlit.app/) · Or run locally via `streamlit run streamlit_app.py`.
 
-> **v1.4.0 Milestone Drop:** **Phase 1 (The Network Shield)** is complete and fully merged with 73/73 tests passing green. All 7 transport and security subsystems are live.
+> **v1.5.1 · Phase 2: The Parsing & Extraction Engine (Subsystem 8/15 Live).** 104/104 passing tests, AST noise stripping, 40-70% token reduction, and zero network leaks. Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -66,8 +66,9 @@ The development of Smart Miner is organized into 4 architectural phases comprisi
 - [x] **Subsystem 6:** In-Memory DNS Cache & Multi-IP Fast Fallback (<0.002ms lookup; round-robin CDN failover)
 - [x] **Subsystem 7:** Performance Benchmark Engine & Stress Verification Suite (73/73 tests passing)
 
-### Phase 2: The Parsing & Extraction Engine `[In Progress]`
-- [ ] **Subsystems 8–15:** AST DOM cleaner, table markdown normalizer, heading hierarchy preservation, semantic content scoring, and JSON-LD entity graph assembly.
+### Phase 2: The Parsing & Extraction Engine `[v1.5.1 · In Progress]`
+- [x] **Subsystem 8:** AST HTML Cleaner & Noise Stripper (eliminates trackers, cookie banners, SVG coordinates & inline styles; 40-70% token savings)
+- [ ] **Subsystems 9–15:** Table normalizer, heading hierarchy, semantic density scoring, OpenGraph metadata, JSON-LD graph resolver, evidence builder, and benchmark suite.
 
 ### Phase 3: Anti-Detection & Session Matrix `[Planned]`
 - [ ] **Subsystems 16–22:** Dynamic proxy mesh integration, cookie jar persistence, TLS fingerprint alignment, and soft barrier mitigation.

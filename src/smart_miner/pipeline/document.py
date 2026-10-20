@@ -6,6 +6,11 @@ from bs4 import BeautifulSoup, Comment
 from markdownify import markdownify
 from pydantic import BaseModel, Field
 
+try:
+    from .ast_cleaner import ASTCleaner, ASTCleanReport
+except ImportError:
+    from ast_cleaner import ASTCleaner, ASTCleanReport
+
 
 class CleanDocument(BaseModel):
     source_url: str
@@ -16,6 +21,7 @@ class CleanDocument(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     input_character_count: int
     output_character_count: int
+    noise_reduction_percentage: float = 0.0
 
     def extraction_text(self):
         text = f"Source: {self.source_url}\n"
@@ -61,8 +67,9 @@ def structured_data_markdown(items):
 
 
 class DocumentCleaner:
-    def __init__(self, *, prefer_main: bool = False):
+    def __init__(self, *, prefer_main: bool = False, ast_cleaner: ASTCleaner | None = None):
         self.prefer_main = prefer_main
+        self.ast_cleaner = ast_cleaner or ASTCleaner()
 
     def clean(self, page, *, structured_fallback=True):
         if __package__ == "pipeline":
@@ -85,12 +92,14 @@ class DocumentCleaner:
         base_url = urljoin(page.source_url, base["href"]) if base else page.source_url
         # Malformed pages may place <title> outside <head>; it is metadata,
         # never visible article content.
-        for node in soup(["script", "style", "noscript", "head", "title", "template"]):
+        for node in soup(["head", "title"]):
             node.decompose()
-        for comment in soup.find_all(string=lambda value: isinstance(value, Comment)):
+        clean_report = self.ast_cleaner.clean_soup(soup)
+
+        if False:  # comments already extracted in ast_cleaner
             comment.extract()
         # Do not drop nav/footer wholesale: they may contain useful contacts or links.
-        for node in soup.select('[hidden], [aria-hidden="true"]'):
+        if False:  # hidden nodes already decomposed in ast_cleaner
             node.decompose()
         # Choose the content region only after removing scripts and hidden
         # nodes. Otherwise a JS shell can look substantial and then clean to
@@ -149,6 +158,7 @@ class DocumentCleaner:
         document = CleanDocument(source_url=page.source_url, title=title,
                                  markdown=markdown, visible_text=visible, json_ld=json_ld,
                                  warnings=warnings, input_character_count=len(page.html),
-                                 output_character_count=0)
+                                 output_character_count=0,
+                                 noise_reduction_percentage=clean_report.noise_reduction_percentage)
         document.output_character_count = len(document.extraction_text())
         return document

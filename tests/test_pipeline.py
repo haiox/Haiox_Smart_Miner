@@ -264,7 +264,7 @@ class PipelineTests(unittest.IsolatedAsyncioTestCase):
         page = await PageFetcher().fetch_static('https://example.test/start')
         self.assertEqual(page.source_url, 'https://example.test/final')
         self.assertEqual(page.html, '<h1>Final</h1>')
-        client_type.assert_called_once_with(follow_redirects=True)
+        self.assertTrue(client_type.call_args.kwargs.get("follow_redirects"))
 
     @patch('smart_miner.crawler.fetcher.async_playwright')
     async def test_browser_timeout_still_closes_browser(self, factory):

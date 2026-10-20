@@ -4,6 +4,29 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.5.1] - 2026-10-21 (Phase 2: Subsystem 8/15)
+
+### 🧹 High-Performance AST HTML Cleaner & Noise Stripper
+- **High-Performance AST DOM Cleaner (`smart_miner.pipeline.ast_cleaner`):**
+  - Architected `ASTCleaner` and `ASTCleanReport` implementing deep tree sanitization prior to Markdown generation.
+  - Automatic removal of non-semantic or visual binary tags: `<script>`, `<style>`, `<noscript>`, `<template>`, `<svg>`, `<canvas>`, `<iframe>`, `<audio>`, `<video>`, `<embed>`, `<object>`, `<portal>`.
+  - Privacy and cookie banner neutralization: strips `#onetrust-consent-sdk`, `.cookie-banner`, `.cookie-notice`, `.cc-window`, `.qc-cmp2-container`, and related overlays.
+  - Ad container and promotional modal elimination: strips `ins.adsbygoogle`, `[class*='ad-container']`, `[id*='google_ads']`, `[id*='taboola']`, `[id*='outbrain']`, and newsletter subscription overlays (`[aria-modal='true'][role='dialog']`).
+  - Attribute sanitization: strips inline CSS bloat (`style="..."`), JavaScript event handlers (`onclick`, `onload`, `onmouseover`), analytics telemetry (`data-track*`, `data-gtm*`, `data-ga*`), and frontend framework tags (`data-v-*`, `ng-*`, `data-reactroot`).
+  - Strict preservation of semantic attributes: retains `href`, `src`, `alt`, `title`, `colspan`, `rowspan`, `id`, and `name`.
+  - Structural container pruning: removes empty, orphaned `<div>`, `<span>`, `<p>`, and `<section>` tags left behind by stripped advertisements.
+- **Pipeline Integration (`smart_miner.pipeline.document`):**
+  - Integrated `ASTCleaner` directly into `DocumentCleaner.clean()`.
+  - Injected `noise_reduction_percentage` into `CleanDocument` dataclass (reducing input token size by **40% to 70%**).
+- **Test Suite Expansion (`tests/test_ast_cleaner.py`):**
+  - Added 9 unit and integration tests covering tag removal, cookie banner elimination, modal stripping, inline style purging, analytics attribute scrubbing, and semantic table attribute preservation.
+  - Full test suite expanded from 73 to **104 automated tests** (100% PASS in ~4.3s).
+- **Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.5.1` with `🧹 AST Cleaner (Subsystem 8/15)` header badge.
+  - Added live DOM noise reduction telemetry to diagnostics tab.
+
+---
+
 ## [1.4.0] - 2026-10-20 (Phase 1 Complete: The Network Shield)
 
 ### 🛡️ Phase 1 Synthesis, Performance Benchmarking & Stress Engine

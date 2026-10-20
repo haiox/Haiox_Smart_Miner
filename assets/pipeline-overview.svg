@@ -1,44 +1,176 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 272" role="img" aria-labelledby="title desc">
-  <title id="title">Haiox Smart Miner pipeline</title>
-  <desc id="desc">A URL goes through an HTTP fetch and content check. Thin content triggers browser fallback. The result is cleaned into a reusable document, with optional model extraction and validation.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" width="100%" height="100%">
   <defs>
-    <linearGradient id="bg" x2="1" y2="1">
-      <stop stop-color="#10283c"/>
-      <stop offset="1" stop-color="#0a1728"/>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329"/>
+      <stop offset="50%" stop-color="#0d1b2a"/>
+      <stop offset="100%" stop-color="#050a14"/>
     </linearGradient>
-    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-      <path d="M0 0L7 3.5L0 7Z" fill="#5eead4"/>
+
+    <!-- Card Background Gradient -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#162238"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Highlight Gradients -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Marker Arrow -->
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L7,4 L0,7 Z" fill="#38bdf8"/>
     </marker>
-    <style>
-      text { font-family: Arial, Helvetica, sans-serif; }
-      .label { fill: #edf8ff; font-size: 18px; font-weight: 700; }
-      .small { fill: #acc5d5; font-size: 12px; }
-      .step { fill: #5eead4; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; }
-      .box { fill: #153046; stroke: #3b6475; stroke-width: 1.5; }
-      .flow { fill: none; stroke: #5eead4; stroke-width: 2; marker-end: url(#arrow); }
-    </style>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L7,4 L0,7 Z" fill="#10b981"/>
+    </marker>
   </defs>
-  <rect x="1" y="1" width="858" height="270" rx="22" fill="url(#bg)" stroke="#2c5368" stroke-width="2"/>
-  <text x="28" y="36" class="step">FETCH → CHECK → CLEAN → REUSE</text>
-  <rect x="28" y="62" width="130" height="78" rx="13" class="box"/>
-  <text x="44" y="91" class="label">🌐 URL</text>
-  <text x="44" y="115" class="small">One target page</text>
-  <path d="M158 101H182" class="flow"/>
-  <rect x="188" y="62" width="159" height="78" rx="13" class="box"/>
-  <text x="204" y="91" class="label">⚡ HTTP fetch</text>
-  <text x="204" y="115" class="small">Check visible content</text>
-  <path d="M347 101H371" class="flow"/>
-  <rect x="377" y="62" width="181" height="78" rx="13" class="box"/>
-  <text x="393" y="91" class="label">🧭 Route</text>
-  <text x="393" y="115" class="small">Browser only if needed</text>
-  <path d="M558 101H582" class="flow"/>
-  <rect x="588" y="62" width="244" height="78" rx="13" class="box"/>
-  <text x="604" y="91" class="label">🧹 CleanDocument</text>
-  <text x="604" y="115" class="small">Text, links, tables, source, JSON-LD</text>
-  <path d="M709 140V167" class="flow"/>
-  <rect x="493" y="174" width="339" height="67" rx="13" class="box"/>
-  <text x="509" y="201" class="label">✅ Reuse or optional AI extraction</text>
-  <text x="509" y="224" class="small">Validate the requested output shape with Pydantic</text>
-  <text x="28" y="196" class="small">Blocked or challenged pages stop.</text>
-  <text x="28" y="216" class="small">The browser fallback has a bounded wait.</text>
+
+  <style>
+    .title { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; fill: #38bdf8; text-transform: uppercase; }
+    .card-title { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 15px; font-weight: 700; fill: #f8fafc; }
+    .card-sub { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 11px; font-weight: 400; fill: #94a3b8; }
+    .badge { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 10px; font-weight: 600; fill: #10b981; }
+    .pill { fill: #0f2723; stroke: #10b981; stroke-width: 1; rx: 4; }
+    .code { font-family: 'Consolas', 'Fira Code', monospace; font-size: 11px; fill: #a5f3fc; }
+    .flow-line { stroke: #38bdf8; stroke-width: 2; fill: none; stroke-dasharray: 4, 4; animation: dash 30s linear infinite; }
+    .shield-line { stroke: #10b981; stroke-width: 2; fill: none; }
+  </style>
+
+  <!-- Container Canvas -->
+  <rect x="2" y="2" width="956" height="376" rx="16" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- Header Banner -->
+  <text x="32" y="38" class="title">⚡ HAIOX SMART MINER ARCHITECTURE · PHASE 1 &amp; THE INGESTION ENGINE</text>
+  <rect x="740" y="22" width="188" height="24" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="752" y="38" class="badge">🛡️ Phase 1 Complete (7/7)</text>
+
+  <!-- Box 1: Untrusted Target URL -->
+  <g transform="translate(32, 65)">
+    <rect width="145" height="280" rx="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5"/>
+    <rect x="0" y="0" width="145" height="6" rx="3" fill="url(#blueGrad)"/>
+    <text x="18" y="34" class="card-title">🌐 Target Ingest</text>
+    <text x="18" y="52" class="card-sub">Untrusted Web URL</text>
+
+    <!-- Specs -->
+    <rect x="14" y="75" width="117" height="42" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="22" y="93" class="code">HTTP / HTTPS</text>
+    <text x="22" y="108" class="card-sub">Strict Port 80/443</text>
+
+    <rect x="14" y="130" width="117" height="58" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="22" y="148" class="code">Pre-Flight Audit</text>
+    <text x="22" y="163" class="card-sub">Scheme &amp; Format</text>
+    <text x="22" y="178" class="card-sub">Zero Socket Open</text>
+
+    <rect x="14" y="200" width="117" height="60" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="22" y="218" class="code">Safe Pre-Route</text>
+    <text x="22" y="233" class="card-sub">RFC 2606 Bypass</text>
+    <text x="22" y="248" class="card-sub">Private Flag Guard</text>
+  </g>
+
+  <!-- Flow Connector 1 -> 2 -->
+  <line x1="177" y1="205" x2="218" y2="205" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Box 2: The Network Shield (Phase 1 Core) -->
+  <g transform="translate(225, 65)">
+    <rect width="250" height="280" rx="12" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="0" y="0" width="250" height="6" rx="3" fill="url(#shieldGrad)"/>
+    <text x="20" y="34" class="card-title">🛡️ Phase 1: Network Shield</text>
+    <text x="20" y="52" class="card-sub">Pre-Fetch Defenses &amp; Transport Engine</text>
+
+    <!-- Subsystems Matrix -->
+    <rect x="16" y="70" width="218" height="38" rx="6" fill="#062d22" stroke="#059669"/>
+    <text x="26" y="87" class="card-title" font-size="12px" fill="#6ee7b7">1. Zero-Trust SSRF Shield</text>
+    <text x="26" y="101" class="card-sub">Blocks 127.0.0.1, RFC1918, Cloud Metadata</text>
+
+    <rect x="16" y="116" width="218" height="38" rx="6" fill="#0c1d33" stroke="#2563eb"/>
+    <text x="26" y="133" class="card-title" font-size="12px" fill="#93c5fd">2. In-Memory DNS Cache</text>
+    <text x="26" y="147" class="card-sub">&lt;0.002ms Cache Hit · Multi-IP CDN Failover</text>
+
+    <rect x="16" y="162" width="218" height="38" rx="6" fill="#1e1b4b" stroke="#6366f1"/>
+    <text x="26" y="179" class="card-title" font-size="12px" fill="#c7d2fe">3. HTTPX Pool &amp; HTTP/2</text>
+    <text x="26" y="193" class="card-sub">100 Max Conns · Session TLS Reuse</text>
+
+    <rect x="16" y="208" width="218" height="38" rx="6" fill="#2e1065" stroke="#9333ea"/>
+    <text x="26" y="225" class="card-title" font-size="12px" fill="#e9d5ff">4. Dynamic Fingerprint Matrix</text>
+    <text x="26" y="239" class="card-sub">5 Coherent Profiles · Anti-Bot Canary Trap</text>
+
+    <rect x="16" y="254" width="218" height="38" rx="6" fill="#422006" stroke="#d97706"/>
+    <text x="26" y="271" class="card-title" font-size="12px" fill="#fde68a">5. Bounded Stream &amp; Full Jitter</text>
+    <text x="26" y="285" class="card-sub">5MB Anti-DoS Cutoff · AWS Exponential Jitter</text>
+  </g>
+
+  <!-- Flow Connector 2 -> 3 -->
+  <line x1="475" y1="205" x2="515" y2="205" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Box 3: Content Quality & Hybrid Routing -->
+  <g transform="translate(522, 65)">
+    <rect width="195" height="280" rx="12" fill="url(#cardGrad)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="0" y="0" width="195" height="6" rx="3" fill="url(#blueGrad)"/>
+    <text x="18" y="34" class="card-title">🧭 Hybrid Router</text>
+    <text x="18" y="52" class="card-sub">Static Fast-Path vs Browser</text>
+
+    <!-- Strategy Branching -->
+    <rect x="14" y="75" width="167" height="52" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="24" y="94" class="code">⚡ Static Fast-Path</text>
+    <text x="24" y="112" class="card-sub">HTTPX Streaming (&lt;100ms)</text>
+
+    <rect x="14" y="137" width="167" height="52" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="24" y="156" class="code">🎭 Dynamic Fallback</text>
+    <text x="24" y="174" class="card-sub">Playwright for SPA / JS Render</text>
+
+    <rect x="14" y="199" width="167" height="60" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="24" y="218" class="code">🛡️ Barrier Detection</text>
+    <text x="24" y="233" class="card-sub">Detects 401/403/429</text>
+    <text x="24" y="248" class="card-sub">Blocks Soft Error 200s</text>
+  </g>
+
+  <!-- Flow Connector 3 -> 4 -->
+  <line x1="717" y1="205" x2="755" y2="205" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Box 4: CleanDocument & Synergy Plane -->
+  <g transform="translate(762, 65)">
+    <rect width="166" height="280" rx="12" fill="url(#cardGrad)" stroke="#c084fc" stroke-width="1.5"/>
+    <rect x="0" y="0" width="166" height="6" rx="3" fill="url(#purpleGrad)"/>
+    <text x="16" y="34" class="card-title">🧹 CleanDocument</text>
+    <text x="16" y="52" class="card-sub">AI &amp; Trilogy Synergy</text>
+
+    <rect x="12" y="75" width="142" height="56" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="20" y="93" class="code">Normalized Doc</text>
+    <text x="20" y="108" class="card-sub">Clean Markdown</text>
+    <text x="20" y="122" class="card-sub">Preserved JSON-LD</text>
+
+    <rect x="12" y="141" width="142" height="56" rx="6" fill="#0b132b" stroke="#1e293b"/>
+    <text x="20" y="159" class="code">🤖 Qwen 2.5 / AI</text>
+    <text x="20" y="174" class="card-sub">Pydantic Schemas</text>
+    <text x="20" y="188" class="card-sub">OpenRouter Hook</text>
+
+    <rect x="12" y="207" width="142" height="54" rx="6" fill="#1e1138" stroke="#7c3aed"/>
+    <text x="20" y="225" class="code" fill="#e9d5ff">🏛️ Trilogy Evidence</text>
+    <text x="20" y="240" class="card-sub">DePIN Agent Ready</text>
+    <text x="20" y="254" class="card-sub">Orchestrator Grounding</text>
+  </g>
 </svg>

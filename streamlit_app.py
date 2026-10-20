@@ -123,11 +123,12 @@ with st.sidebar:
     selected_model = st.selectbox(
         "Extraction Model",
         options=[
-            "deepseek/deepseek-chat",
             "qwen/qwen-2.5-72b-instruct",
+            "deepseek/deepseek-chat",
             "google/gemini-2.0-flash-001",
         ],
         index=0,
+        help="Qwen 2.5 72B is optimal for structured Pydantic schema extraction.",
     )
 
     st.divider()
@@ -139,7 +140,7 @@ with st.sidebar:
         - **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** Governed Workflow
         """
     )
-    st.caption("Architecture Dashboard · v1.3.5 (Phase 1: Subsystems 5/7)")
+    st.caption("Architecture Dashboard · v1.4.0 (Phase 1: The Network Shield Complete)")
 
 # Main URL Input Area
 col_url, col_btn = st.columns([5, 1])

@@ -124,11 +124,12 @@ with st.sidebar:
         "Extraction Model",
         options=[
             "qwen/qwen-2.5-72b-instruct",
+            "qwen/qwen-2.5-coder-32b-instruct",
             "deepseek/deepseek-chat",
             "google/gemini-2.0-flash-001",
         ],
         index=0,
-        help="Qwen 2.5 72B is optimal for structured Pydantic schema extraction.",
+        help="Qwen 2.5 is the primary model for structured Pydantic schema validation.",
     )
 
     st.divider()

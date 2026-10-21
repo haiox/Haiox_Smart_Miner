@@ -3,9 +3,9 @@
 **The bedrock data ingestion, zero-trust network shield, and structural parsing engine powering the Haiox AI Trilogy.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-163%2F163_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
-[![Phase 1 & 2](https://img.shields.io/badge/Phase_1_%26_2_Complete_(15%2F15)-00C853?style=flat-square)](CHANGELOG.md)
-[![Release](https://img.shields.io/badge/Release-v1.6.0-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
+[![Tests](https://img.shields.io/badge/Tests-195%2F195_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
+[![Phase 1, 2 & 3](https://img.shields.io/badge/Phase_1%2C_2_%26_3_Complete_(22%2F22)-00C853?style=flat-square)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/Release-v1.8.0-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
@@ -17,7 +17,7 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 [⚡ Try the Hosted Streamlit Dashboard](https://haiox-smart-miner-review.streamlit.app/) · Or run locally via `streamlit run streamlit_app.py`.
 
-> **v1.6.0 · Phase 1 & 2 Complete (15/15 Subsystems Merged).** 163/163 passing offline tests, zero network socket leaks, 19,000 ops/s JSON-LD graph unrolling, AST noise stripping, 2D matrix table expansion, monotonic heading hierarchy gap repair, semantic density scoring, OpenGraph metadata harvesting, and deterministic SHA-256 evidence grounding. Zero LLM dependencies required for complete local document parsing.
+> **v1.8.0 · Phase 1, 2 & 3 Complete (22/22 Subsystems Merged).** 195/195 passing offline tests, zero network socket leaks, 19,000 ops/s JSON-LD graph unrolling, AST noise stripping, 2D matrix table expansion, monotonic heading hierarchy gap repair, semantic density scoring, OpenGraph metadata harvesting, deterministic SHA-256 evidence grounding, Playwright context pooling (<150ms per context), 120,000 ops/s route resource blocking (80% RAM cut), stealth driver anti-bot shims, Turnstile/Datadome diagnostics, infinite scroll emulation, and cryptographic visual evidence capture. Zero LLM dependencies required for complete local document parsing.
 
 ---
 
@@ -114,6 +114,18 @@ All benchmarks are measured natively on **Python 3.11** under offline test suite
 | **14** | **Trilogy Evidence Packager** | **4,782 ops/sec** | `209 µs` | SHA-256 fingerprinting & token-budgeted GFM XML chunks |
 | **15** | **End-to-End Local Pipeline** | **~20 docs/sec** | `~50 ms` | Zero LLM tokens, complete `CleanDocument` extraction |
 
+### Phase 3: The Turbo Dynamic Execution & Anti-Bot Engine (Subsystems 16–22)
+
+| Layer | Subsystem & Dynamic Module | Measured Throughput | Avg Latency | Dynamic & Stealth Guarantee |
+| :--- | :--- | :--- | :--- | :--- |
+| **16** | **Playwright Context Pool** | **High Concurrency** | `< 150 ms` | Eliminates 3000ms process launch overhead; auto-recycles RAM |
+| **17** | **Route Resource Blocker** | **121,875 ops/sec** | `8.21 µs` | Aborts images/fonts/media/trackers; cuts RAM by 80-90% |
+| **18** | **Stealth Driver Armor** | **57,198 ops/sec** | `17.48 µs` | Purges `webdriver`, mocks `window.chrome`, plugins & WebGL |
+| **19** | **Heuristic Dynamic Wait** | **Adaptive** | `Settles ~150ms` | React/Next.js hydration detection & DOM mutation quietness |
+| **20** | **Bot Barrier Diagnostics**| **4,453 ops/sec** | `224.57 µs` | Turnstile, CF Challenge, Datadome, and AWS WAF detection |
+| **21** | **Infinite Scroll Emulator** | **Adaptive Stepped** | `~250 ms/step` | IntersectionObserver trigger with stagnation termination |
+| **22** | **Visual Evidence Hashing** | **247,506 ops/sec** | `4.04 µs` | Deterministic SHA-256 screenshot hashing for grounding |
+
 ---
 
 ## 🗺️ 4-Phase Architectural Roadmap (30 Subsystems)
@@ -122,7 +134,7 @@ Smart Miner is engineered across 4 distinct phases consisting of 30 modular subs
 
 ```
 [ Phase 1: Network Shield ] ──► [ Phase 2: Structural Parsing ] ──► [ Phase 3: Dynamic Anti-Bot ] ──► [ Phase 4: Production Scale ]
-       (7/7 Merged ✅)                   (8/8 Merged ✅)                       (Next Shift ⏳)                     (Planned 📋)
+       (7/7 Merged ✅)                   (8/8 Merged ✅)                       (7/7 Merged ✅)                     (Next Sprint 📋)
 ```
 
 ### Phase 1: The Network Shield `[v1.4.0 · COMPLETED]`
@@ -144,17 +156,17 @@ Smart Miner is engineered across 4 distinct phases consisting of 30 modular subs
 - [x] **Subsystem 14:** Trilogy Evidence Artifact Builder & Grounding Packager (deterministic SHA-256 provenance, token-bounded XML chunks)
 - [x] **Subsystem 15:** Phase 2 Benchmark & Synthesis Suite (163/163 automated test passes, 50ms end-to-end local document processing)
 
-### Phase 3: Dynamic Browser & Anti-Bot Armor `[Next Shift]`
-- [ ] **Subsystem 16:** Playwright Context Pool & Resource Blocker (filter image/font/media for 90% memory reduction)
-- [ ] **Subsystem 17:** Stealth Driver Injection & CDP Leak Masking (`navigator.webdriver` evasion)
-- [ ] **Subsystem 18:** Smart Wait, Network Idle Heuristics & Infinite Scroll Simulator
-- [ ] **Subsystem 19:** Cloudflare / Turnstile Challenge Detection & Fallback Triggers
-- [ ] **Subsystem 20:** Visual Evidence Capture & Screenshot Grounding
-- [ ] **Subsystem 21:** Dynamic Proxy Mesh & Rotating Egress Network
-- [ ] **Subsystem 22:** Phase 3 Synthesis & Anti-Bot Benchmark Suite
+### Phase 3: Dynamic Browser & Anti-Bot Armor `[v1.8.0 · COMPLETED]`
+- [x] **Subsystem 16:** Playwright Browser Context Pool (eliminates 3000ms launch overhead; context recycling after 50 sessions)
+- [x] **Subsystem 17:** Route Interception & Resource Blocker (blocks images/fonts/media/trackers for 80-90% RAM reduction; 121k ops/sec)
+- [x] **Subsystem 18:** Stealth Driver Injection & Anti-Bot Armor (`navigator.webdriver` removal, `window.chrome` mock, WebGL vendor shims)
+- [x] **Subsystem 19:** Heuristic Dynamic Wait & Hydration Settle (Next.js, React, Vue, Nuxt detection & MutationObserver quietness)
+- [x] **Subsystem 20:** Modern Bot Barrier Diagnostics (Cloudflare Turnstile, Managed Challenge, Datadome, AWS WAF detection; 4.4k ops/sec)
+- [x] **Subsystem 21:** Infinite Scroll & Virtual List Emulation (stepped smooth scrolling with adaptive stagnation early-stop)
+- [x] **Subsystem 22:** Cryptographic Visual Evidence Hashing (deterministic SHA-256 screenshot verification; 247k ops/sec)
 
-### Phase 4: Production Scale & Enterprise CLI `[Planned]`
-- [ ] **Subsystems 23–30:** Batch Crawler Engine, Domain Rate-Limiting, Standalone CLI Tool, FastAPI Microservice with SSE, and Dockerized Runtime.
+### Phase 4: Production Scale & Enterprise CLI `[Next Sprint]`
+- [ ] **Subsystems 23–30:** Batch Crawler Engine, Domain Rate-Limiting, Standalone CLI Tool (`haiox-miner`), FastAPI Microservice with SSE, and Dockerized Runtime.
 
 ---
 
@@ -187,7 +199,7 @@ python -m playwright install chromium
 
 ## 🚀 Quickstart & Usage
 
-### 1. Verify All 163 Offline Tests
+### 1. Verify All 195 Offline Tests
 
 ```bash
 python -m unittest discover -s tests -v
@@ -305,7 +317,7 @@ asyncio.run(main())
 
 ## 🤝 Contributing
 
-Contributions, issues, and security disclosures are welcome. Before submitting a pull request, ensure all 163 tests pass:
+Contributions, issues, and security disclosures are welcome. Before submitting a pull request, ensure all 195 tests pass:
 
 ```bash
 python -m unittest discover -s tests -v

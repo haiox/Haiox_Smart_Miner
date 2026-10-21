@@ -38,6 +38,10 @@ class FetchedPage:
     status_code: int = 200
     strategy: str = "static"
     response_headers: dict | None = None
+    barrier_report: dict | None = None
+    visual_evidence: dict | None = None
+    scroll_report: dict | None = None
+    wait_result: dict | None = None
 
 
 class PageFetcher:
@@ -59,6 +63,12 @@ class PageFetcher:
         retries: int | None = None,
         retry_config: RetryConfig | None = None,
         dns_resolver: DNSResolver | None = None,
+        browser_pool=None,
+        enable_stealth: bool = True,
+        enable_resource_blocking: bool = True,
+        enable_smart_wait: bool = True,
+        enable_scroll: bool = False,
+        capture_visual_evidence: bool = False,
     ):
         if browser_timeout_ms <= 0:
             raise ValueError("browser_timeout_ms must be positive")
@@ -100,6 +110,14 @@ class PageFetcher:
 
         # DNS Cache & Resolver Configuration
         self.dns_resolver = dns_resolver or DNSResolver(allow_private_urls=self.allow_private_urls)
+
+        # Browser Pool & Dynamic Anti-Bot Configuration
+        self.browser_pool = browser_pool
+        self.enable_stealth = enable_stealth
+        self.enable_resource_blocking = enable_resource_blocking
+        self.enable_smart_wait = enable_smart_wait
+        self.enable_scroll = enable_scroll
+        self.capture_visual_evidence = capture_visual_evidence
 
     @property
     def is_pool_active(self) -> bool:
@@ -185,11 +203,13 @@ class PageFetcher:
         return self._client
 
     async def close(self) -> None:
-        """Close the underlying connection pool if owned by this instance."""
+        """Close the underlying connection pool and browser pool if owned by this instance."""
         if self._owns_client and self._client is not None:
             if hasattr(self._client, "aclose") and getattr(self._client, "is_closed", False) is not True:
                 await self._client.aclose()
             self._client = None
+        if self.browser_pool is not None and getattr(self, "_owns_browser_pool", False):
+            await self.browser_pool.close()
 
     async def __aenter__(self):
         await self.get_client()
@@ -301,11 +321,112 @@ class PageFetcher:
                 self.last_retries_count += 1
                 await self.retry_engine.sleep_backoff(attempt)
 
+    async def _execute_dynamic_page(self, page, url: str) -> FetchedPage:
+        response = await page.goto(
+            url, wait_until="domcontentloaded", timeout=self.browser_timeout_ms
+        )
+        if not self.allow_private_urls and page.url != url:
+            validate_url_target(page.url, allow_private=False, dns_resolver=self.dns_resolver)
+
+        from .barriers import BarrierDetector, barrier_reason
+
+        raw_content = await page.content()
+        status = response.status if response and hasattr(response, "status") else 200
+        headers = dict(response.headers) if response and hasattr(response, "headers") else {}
+
+        initial = FetchedPage(
+            raw_content,
+            page.url,
+            status,
+            "dynamic",
+            response_headers=headers,
+        )
+
+        barrier_rep = BarrierDetector.detect(initial)
+        if barrier_rep.is_blocked:
+            return FetchedPage(
+                raw_content,
+                page.url,
+                status,
+                "dynamic",
+                response_headers=headers,
+                barrier_report=barrier_rep.to_dict(),
+            )
+
+        wait_res = None
+        if self.wait_selector:
+            try:
+                await page.locator(self.wait_selector).wait_for(
+                    state="visible", timeout=self.browser_timeout_ms
+                )
+            except Exception:
+                current = FetchedPage(
+                    await page.content(),
+                    page.url,
+                    initial.status_code,
+                    "dynamic",
+                    response_headers=headers,
+                )
+                if barrier_reason(current):
+                    return current
+                raise
+        elif self.enable_smart_wait:
+            try:
+                from .smart_wait import SmartWait
+                sw = SmartWait(default_timeout_ms=min(5000, self.browser_timeout_ms))
+                wait_res = await sw.wait_for_settled(page, timeout_ms=self.browser_timeout_ms)
+            except Exception:
+                await page.wait_for_timeout(min(1000, self.browser_timeout_ms))
+        else:
+            await page.wait_for_timeout(min(1000, self.browser_timeout_ms))
+
+        # Scroll Emulation
+        scroll_rep = None
+        if self.enable_scroll:
+            try:
+                from .scroll import ScrollEmulator
+                se = ScrollEmulator()
+                scroll_rep = await se.scroll(page)
+            except Exception:
+                pass
+
+        # Visual Evidence
+        visual_ev = None
+        if self.capture_visual_evidence:
+            try:
+                from .visual_evidence import VisualEvidenceCapture
+                visual_ev = await VisualEvidenceCapture.capture(page)
+            except Exception:
+                pass
+
+        final_content = await page.content()
+        return FetchedPage(
+            final_content,
+            page.url,
+            status,
+            "dynamic",
+            response_headers=headers,
+            barrier_report=barrier_rep.to_dict() if barrier_rep.is_blocked else None,
+            visual_evidence=visual_ev.to_dict() if visual_ev else None,
+            scroll_report=scroll_rep.to_dict() if scroll_rep else None,
+            wait_result=wait_res.__dict__ if wait_res else None,
+        )
+
     async def fetch_dynamic(self, url: str) -> FetchedPage:
-        validate_url_target(url, allow_private=self.allow_private_urls)
+        validate_url_target(url, allow_private=self.allow_private_urls, dns_resolver=self.dns_resolver)
+        req_headers = self.get_headers_for_url(url)
+
+        if self.browser_pool is not None:
+            context = await self.browser_pool.acquire_context(profile=self._active_profile, extra_headers=req_headers)
+            try:
+                page = await context.new_page()
+                return await self._execute_dynamic_page(page, url)
+            finally:
+                await self.browser_pool.release_context(context)
+
         if async_playwright is None:
             raise RuntimeError("Install playwright to enable browser fallback")
-        req_headers = self.get_headers_for_url(url)
+
         async with async_playwright() as playwright:
             browser = await playwright.chromium.launch(
                 headless=True, timeout=self.browser_timeout_ms
@@ -317,45 +438,20 @@ class PageFetcher:
                         user_agent=req_headers.get("User-Agent"),
                         extra_http_headers=req_headers,
                     )
-                    page = await context.new_page()
-                    response = await page.goto(
-                        url, wait_until="domcontentloaded", timeout=self.browser_timeout_ms
-                    )
-                    if not self.allow_private_urls and page.url != url:
-                        validate_url_target(page.url, allow_private=False)
-                    from .barriers import barrier_reason
-
-                    initial = FetchedPage(
-                        await page.content(),
-                        page.url,
-                        response.status if response else 200,
-                        "dynamic",
-                    )
-                    if barrier_reason(initial):
-                        return initial
-                    if self.wait_selector:
+                    if self.enable_stealth:
                         try:
-                            await page.locator(self.wait_selector).wait_for(
-                                state="visible", timeout=self.browser_timeout_ms
-                            )
+                            from .stealth import StealthEngine
+                            await StealthEngine().apply_to_context(context, profile=self._active_profile)
                         except Exception:
-                            current = FetchedPage(
-                                await page.content(),
-                                page.url,
-                                initial.status_code,
-                                "dynamic",
-                            )
-                            if barrier_reason(current):
-                                return current
-                            raise
-                    else:
-                        # Bounded settling period; callers should supply a selector for AJAX.
-                        await page.wait_for_timeout(min(1000, self.browser_timeout_ms))
-                    return FetchedPage(
-                        await page.content(),
-                        page.url,
-                        response.status if response else 200,
-                        "dynamic",
-                    )
+                            pass
+                    if self.enable_resource_blocking:
+                        try:
+                            from .resource_blocker import RouteBlocker
+                            await RouteBlocker().attach_to_context(context)
+                        except Exception:
+                            pass
+
+                    page = await context.new_page()
+                    return await self._execute_dynamic_page(page, url)
             finally:
                 await browser.close()

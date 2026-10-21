@@ -4,6 +4,32 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.5.4] - 2026-10-21 (Phase 2: Subsystem 11/15)
+
+### 🎯 Semantic Density & Boilerplate Scorer
+- **Semantic Density Engine (`smart_miner.pipeline.density`):**
+  - Architected `SemanticDensityScorer` and `SemanticDensityReport` (Pydantic model) implementing algorithmic, non-LLM content extraction based on composite text-to-tag ratios and link density analysis.
+  - Non-whitespace character ratio computation in `calculate_link_density()` to eliminate spacing bias between HTML anchor elements.
+  - Punctuation & sentence structure weighting: scores natural narrative prose (commas, periods, colons, question marks in Latin, Persian, Arabic, and international scripts) significantly higher than navigation link lists and tag clouds.
+  - Class & ID heuristic weighting: positive amplification for `.entry-content`, `article.post-body`, and negative penalties for sidebars, footer disclaimers, related article carousels, and social share widgets.
+  - Automated detection and isolation of the `dominant_container_tag` (e.g. `article#main-content` or `div.entry-content`).
+  - Hierarchical deduplication in boilerplate pruning: avoids redundant traversal or child-tag decomposition when a parent container is already marked for removal.
+- **Pipeline Integration (`smart_miner.pipeline.document`):**
+  - Integrated `SemanticDensityScorer` directly into `DocumentCleaner.clean()`.
+  - Added optional `filter_boilerplate: bool = False` parameter to `DocumentCleaner` with automatic boilerplate container pruning when enabled.
+  - Injected typed `density: SemanticDensityReport` field into `CleanDocument` model for system-wide consumption by `Haiox MultiAgent` and `Orchestrator`.
+- **Package Exports (`smart_miner.__init__` & `smart_miner.pipeline.__init__`):**
+  - Exported `SemanticDensityScorer` and `SemanticDensityReport`.
+- **Test Suite Expansion (`tests/test_density.py`):**
+  - Added 8 unit and integration tests covering link density ratios, text-to-tag density, Latin and Persian punctuation weighting, positive vs. negative hint scoring, boilerplate sidebar and link-farm pruning, dominant container identification, non-destructive candidate reporting (`prune=False`), and full `CleanDocument` Pydantic serialization roundtrips.
+  - Full test suite expanded from 125 to **133 automated tests** (100% PASS in ~3.6s).
+- **Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.5.4` with `🎯 Density Scorer (Subsystem 11/15)` header badge.
+  - Added "Filter Boilerplate & Sidebars" interactive toggle in the sidebar.
+  - Added `semantic_density_scorer: ACTIVE`, `semantic_density_score`, `overall_text_density`, `overall_link_density`, and `dominant_container` to the diagnostics panel.
+
+---
+
 ## [1.5.3] - 2026-10-21 (Phase 2: Subsystem 10/15)
 
 ### 📑 Heading Hierarchy & Document Outline Synthesizer

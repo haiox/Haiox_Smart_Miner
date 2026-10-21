@@ -6,6 +6,7 @@ try:
     from .pipeline.ast_cleaner import ASTCleaner, ASTCleanReport
     from .pipeline.tables import TableNormalizer, TableData
     from .pipeline.headings import HeadingItem, DocumentOutline, HeadingHierarchyExtractor, slugify
+    from .pipeline.density import SemanticDensityScorer, SemanticDensityReport
     from .pipeline.document import CleanDocument, DocumentCleaner
     from .pipeline.extractor import StructuredExtractor
     from .pipeline.orchestrator import CrawlOrchestrator
@@ -18,6 +19,8 @@ except ModuleNotFoundError:
     DocumentOutline = None
     HeadingHierarchyExtractor = None
     slugify = None
+    SemanticDensityScorer = None
+    SemanticDensityReport = None
     CleanDocument = None
     DocumentCleaner = None
     StructuredExtractor = None
@@ -33,6 +36,8 @@ __all__ = [
     "DocumentOutline",
     "HeadingHierarchyExtractor",
     "slugify",
+    "SemanticDensityScorer",
+    "SemanticDensityReport",
     "CleanDocument",
     "DocumentCleaner",
     "StructuredExtractor",

@@ -3,9 +3,9 @@
 **The bedrock data ingestion and semantic document engine powering the Haiox AI Trilogy.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-125%2F125_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
-[![Phase 2](https://img.shields.io/badge/Phase_2-Structural_Parsing_(10%2F15)-blue?style=flat-square)](CHANGELOG.md)
-[![Release](https://img.shields.io/badge/Release-v1.5.3-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
+[![Tests](https://img.shields.io/badge/Tests-133%2F133_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
+[![Phase 2](https://img.shields.io/badge/Phase_2-Structural_Parsing_(11%2F15)-blue?style=flat-square)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/Release-v1.5.4-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
@@ -17,7 +17,7 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 [⚡ Try the Hosted Streamlit Dashboard](https://haiox-smart-miner-review.streamlit.app/) · Or run locally via `streamlit run streamlit_app.py`.
 
-> **v1.5.3 · Phase 2: The Parsing & Extraction Engine (Subsystem 10/15 Live).** 125/125 passing tests, AST noise stripping, advanced table markdown normalizer, heading hierarchy & outline synthesizer, and zero network leaks. Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
+> **v1.5.4 · Phase 2: The Parsing & Extraction Engine (Subsystem 11/15 Live).** 133/133 passing tests, AST noise stripping, advanced tables, heading hierarchy, semantic text/link density scoring, and zero network leaks. Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -66,11 +66,12 @@ The development of Smart Miner is organized into 4 architectural phases comprisi
 - [x] **Subsystem 6:** In-Memory DNS Cache & Multi-IP Fast Fallback (<0.002ms lookup; round-robin CDN failover)
 - [x] **Subsystem 7:** Performance Benchmark Engine & Stress Verification Suite (73/73 tests passing)
 
-### Phase 2: The Parsing & Extraction Engine `[v1.5.3 · In Progress]`
+### Phase 2: The Parsing & Extraction Engine `[v1.5.4 · In Progress]`
 - [x] **Subsystem 8:** AST HTML Cleaner & Noise Stripper (eliminates trackers, cookie banners, SVG coordinates & inline styles; 40-70% token savings)
 - [x] **Subsystem 9:** Advanced Table & Tabular Normalizer (2D grid matrix expansion for `colspan`/`rowspan`, pipe escaping `\|`, GFM tables & `.to_records()` dictionary exports)
 - [x] **Subsystem 10:** Heading Hierarchy & Outline Synthesizer (strict tree construction, repair of skipped levels, collision-free Unicode slugs, and GFM Table of Contents)
-- [ ] **Subsystems 11–15:** Semantic density scoring, OpenGraph metadata, JSON-LD graph resolver, evidence builder, and benchmark suite.
+- [x] **Subsystem 11:** Semantic Density & Boilerplate Scorer (text-to-tag ratios, link density penalties, punctuation-weighted scoring, and dominant content isolation)
+- [ ] **Subsystems 12–15:** OpenGraph metadata, JSON-LD graph resolver, evidence builder, and benchmark suite.
 
 ### Phase 3: Anti-Detection & Session Matrix `[Planned]`
 - [ ] **Subsystems 16–22:** Dynamic proxy mesh integration, cookie jar persistence, TLS fingerprint alignment, and soft barrier mitigation.

@@ -67,11 +67,12 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner v1.5.3 '
+    '<div class="main-header">⚡ Haiox Smart Miner v1.5.4 '
     '<span class="security-badge" style="border-color: #00c853; background-color: #082914; color: #55f79a;">✅ Phase 1 Complete (7/7)</span> '
     '<span class="security-badge" style="border-color: #0dcaf0; background-color: #052c38; color: #6edff6;">🧹 AST Cleaner (Subsystem 8/15)</span> '
     '<span class="security-badge" style="border-color: #e83e8c; background-color: #2b0d1e; color: #f783ac;">📊 Table Normalizer (Subsystem 9/15)</span> '
     '<span class="security-badge" style="border-color: #ffc107; background-color: #332701; color: #ffe066;">📑 Heading Hierarchy (Subsystem 10/15)</span> '
+    '<span class="security-badge" style="border-color: #17a2b8; background-color: #0c2b33; color: #5bc0de;">🎯 Density Scorer (Subsystem 11/15)</span> '
     '<span class="security-badge">🛡️ SSRF Shield</span> '
     '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Pool</span> '
     '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span> '
@@ -81,7 +82,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox AI Trilogy · Phase 2 Active (125/125 Tests · AST Noise Stripper, Table Normalizer & Heading Hierarchy)</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox AI Trilogy · Phase 2 Active (133/133 Tests · AST Noise Stripper, Tables, Outline & Semantic Density)</div>',
     unsafe_allow_html=True,
 )
 
@@ -98,19 +99,20 @@ with st.sidebar:
     )
     max_retries = st.slider("Max Transient Retries", min_value=0, max_value=5, value=3, help="Exponential backoff with full jitter on 429 & 5xx errors.")
     prefer_main = st.checkbox("Prefer Main Article Region", value=True)
+    filter_boilerplate = st.checkbox("Filter Boilerplate & Sidebars", value=True, help="Semantic density scoring prunes link farms, sidebars, and footer noise.")
     force_dynamic = st.checkbox("Force Browser Fallback (Dynamic)", value=False)
     allow_private = st.checkbox("Allow Private URLs (Dev/Test only)", value=False, help="Enable only for local test servers.")
     wait_selector = st.text_input("Custom Wait Selector (Optional)", value="")
 
     st.markdown("#### ⚡ Transport & Network Engine")
-    st.caption("• **Engine:** AST DOM Cleaner + Table Normalizer + Outline Synthesizer")
-    st.caption("• **Status:** Phase 2 Active (Subsystems 10/15)")
+    st.caption("• **Engine:** AST DOM Cleaner + Table Normalizer + Outline + Density Scorer")
+    st.caption("• **Status:** Phase 2 Active (Subsystems 11/15)")
     st.caption("• **Fingerprint:** Coherent Chrome/Edge/Firefox/Safari Profiles")
     st.caption("• **Retry:** Exponential Backoff & Full Jitter (429/5xx)")
     st.caption("• **DNS:** In-Memory TTL Cache with Multi-IP Fast Fallback")
     st.caption("• **Limits:** 100 max connections, 20 keep-alive")
     st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
-    st.caption("• **Tests:** 125/125 Tests PASS · Zero Leaks")
+    st.caption("• **Tests:** 133/133 Tests PASS · Zero Leaks")
 
     st.divider()
     st.header("🤖 OpenRouter AI Extraction (Optional)")
@@ -383,7 +385,12 @@ if mine_clicked and target_url:
             "ast_noise_cleaner": "ACTIVE (Cookie Banners, Ads, Inline Styles, Event Handlers Stripped)",
             "table_normalizer": "ACTIVE (Colspan/Rowspan Grid Expansion & GFM Tables)",
             "heading_hierarchy_synthesizer": "ACTIVE (Deterministic Slugs & Gap-Repair Outline Tree)",
+            "semantic_density_scorer": "ACTIVE (Text-to-Tag & Link Density Boilerplate Pruner)",
             "dom_noise_reduction": f"{res.get('document', {}).get('noise_reduction_percentage', 0.0)}%",
+            "semantic_density_score": res.get("document", {}).get("density", {}).get("semantic_density_score", 0.0) if res.get("document") else 0.0,
+            "overall_text_density": res.get("document", {}).get("density", {}).get("overall_text_density", 0.0) if res.get("document") else 0.0,
+            "overall_link_density": res.get("document", {}).get("density", {}).get("overall_link_density", 0.0) if res.get("document") else 0.0,
+            "dominant_container": res.get("document", {}).get("density", {}).get("dominant_container_tag", "N/A") if res.get("document") else "N/A",
             "tables_extracted": len(res.get("document", {}).get("tables", [])),
             "headings_extracted": len(res.get("document", {}).get("outline", {}).get("flat_headings", [])) if res.get("document") and res["document"].get("outline") else 0,
         })

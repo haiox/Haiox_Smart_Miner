@@ -10,10 +10,12 @@ try:
     from .ast_cleaner import ASTCleaner, ASTCleanReport
     from .tables import TableNormalizer, TableData
     from .headings import HeadingHierarchyExtractor, DocumentOutline
+    from .density import SemanticDensityScorer, SemanticDensityReport
 except ImportError:
     from ast_cleaner import ASTCleaner, ASTCleanReport
     from tables import TableNormalizer, TableData
     from headings import HeadingHierarchyExtractor, DocumentOutline
+    from density import SemanticDensityScorer, SemanticDensityReport
 
 
 class CleanDocument(BaseModel):
@@ -28,6 +30,7 @@ class CleanDocument(BaseModel):
     noise_reduction_percentage: float = 0.0
     tables: list[TableData] = Field(default_factory=list)
     outline: DocumentOutline = Field(default_factory=DocumentOutline)
+    density: SemanticDensityReport = Field(default_factory=SemanticDensityReport)
 
     def extraction_text(self):
         text = f"Source: {self.source_url}\n"
@@ -80,13 +83,17 @@ class DocumentCleaner:
         ast_cleaner: ASTCleaner | None = None,
         table_normalizer: TableNormalizer | None = None,
         heading_extractor: HeadingHierarchyExtractor | None = None,
+        density_scorer: SemanticDensityScorer | None = None,
         normalize_tables: bool = False,
+        filter_boilerplate: bool = False,
     ):
         self.prefer_main = prefer_main
         self.ast_cleaner = ast_cleaner or ASTCleaner()
         self.table_normalizer = table_normalizer or TableNormalizer()
         self.heading_extractor = heading_extractor or HeadingHierarchyExtractor()
+        self.density_scorer = density_scorer or SemanticDensityScorer()
         self.normalize_tables = normalize_tables
+        self.filter_boilerplate = filter_boilerplate
 
     def clean(self, page, *, structured_fallback=True):
         if __package__ == "pipeline":
@@ -112,6 +119,7 @@ class DocumentCleaner:
         for node in soup(["head", "title"]):
             node.decompose()
         clean_report = self.ast_cleaner.clean_soup(soup)
+        density_report = self.density_scorer.clean_boilerplate(soup, prune=self.filter_boilerplate)
 
         if False:  # comments already extracted in ast_cleaner
             comment.extract()
@@ -188,6 +196,7 @@ class DocumentCleaner:
                                  output_character_count=0,
                                  noise_reduction_percentage=clean_report.noise_reduction_percentage,
                                  tables=structured_tables,
-                                 outline=outline)
+                                 outline=outline,
+                                 density=density_report)
         document.output_character_count = len(document.extraction_text())
         return document

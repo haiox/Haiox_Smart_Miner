@@ -4,6 +4,31 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [2.0.0] - 2026-10-22 (Phase 4 Capstone: Enterprise Production Release - All 30 Subsystems Complete)
+
+### 🏆 Haiox Smart Miner v2.0.0: The Bedrock Ingestion Engine for the Haiox Trilogy
+- **Production CLI Engine (`smart_miner.cli` - Subsystem 23):**
+  - Built unified terminal interface `smart-miner` supporting `crawl`, `serve`, `benchmark`, and `--version`.
+  - Supports output formats: `markdown`, `json`, and `summary`.
+  - File persistence flag (`--output`) and verbose diagnostic routing inspection (`--verbose`).
+- **Enterprise FastAPI Microservice (`smart_miner.api` - Subsystem 24):**
+  - High-throughput asynchronous endpoints: `POST /v1/crawl`, `POST /v1/crawl/batch`, `GET /v1/crawl/batch/{job_id}`, and real-time Server-Sent Events `GET /v1/crawl/stream`.
+  - System health and metadata reflection: `GET /health` and `GET /`.
+  - Native CORS middleware support for cross-domain orchestration.
+- **Enterprise Multi-Stage Dockerfile & Compose (`Dockerfile` & `docker-compose.yml` - Subsystem 25):**
+  - Multi-stage build on `python:3.11-slim` with minimal runtime and Playwright headless Chromium dependencies.
+  - Zero-Trust security compliance: runs under unprivileged non-root user `appuser` (UID 10001).
+  - Explicit resource constraints (`memory: 1024M`, `cpus: 1.50`) and automated health checks (`/health`).
+- **Prometheus Telemetry & Metrics Exporter (`smart_miner.telemetry` - Subsystem 26):**
+  - Standard Prometheus scrape endpoint `GET /metrics` reporting request counters, latency averages, failure rates, DNS cache hits, and bot barrier breakdown.
+- **Domain Rate-Limiter & Batch Queue Engine (`smart_miner.batch` - Subsystem 27):**
+  - Per-domain concurrency semaphores and configurable minimum access intervals preventing target server strain and anti-bot bans.
+  - Asynchronous background job queue with status tracking (`QUEUED`, `PROCESSING`, `COMPLETED`, `FAILED`).
+- **Full-Spectrum Test Suite Expansion:**
+  - Expanded test suite from 195 to **218 automated tests (100% green in ~45s)** across all 4 phases with zero external network leaks.
+
+---
+
 ## [1.8.0] - 2026-10-22 (Phase 3 Capstone: Subsystems 16 to 22 Complete)
 
 ### 🚀 Phase 3: The Turbo Dynamic Execution & Anti-Bot Engine (100% Completed & Benchmarked)

@@ -1,5 +1,7 @@
 """Haiox Smart Miner: reusable single-page extraction core."""
 
+__version__ = "2.0.0"
+
 from .crawler.router import route
 
 try:
@@ -40,7 +42,19 @@ except ModuleNotFoundError:
     StructuredExtractor = None
     CrawlOrchestrator = None
 
+try:
+    from .telemetry.metrics import MinerMetrics, GLOBAL_METRICS
+    from .batch.queue import BatchJob, JobStatus, DomainRateLimiter, BatchCrawlManager
+except ModuleNotFoundError:
+    MinerMetrics = None
+    GLOBAL_METRICS = None
+    BatchJob = None
+    JobStatus = None
+    DomainRateLimiter = None
+    BatchCrawlManager = None
+
 __all__ = [
+    "__version__",
     "route",
     "ASTCleaner",
     "ASTCleanReport",
@@ -67,4 +81,10 @@ __all__ = [
     "DocumentCleaner",
     "StructuredExtractor",
     "CrawlOrchestrator",
+    "MinerMetrics",
+    "GLOBAL_METRICS",
+    "BatchJob",
+    "JobStatus",
+    "DomainRateLimiter",
+    "BatchCrawlManager",
 ]

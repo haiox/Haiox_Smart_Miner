@@ -3,9 +3,9 @@
 **The bedrock data ingestion, zero-trust network shield, and structural parsing engine powering the Haiox AI Trilogy.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-195%2F195_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
-[![Phase 1, 2 & 3](https://img.shields.io/badge/Phase_1%2C_2_%26_3_Complete_(22%2F22)-00C853?style=flat-square)](CHANGELOG.md)
-[![Release](https://img.shields.io/badge/Release-v1.8.0-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
+[![Tests](https://img.shields.io/badge/Tests-218%2F218_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
+[![Phase 1, 2, 3 & 4](https://img.shields.io/badge/Phase_1%2C_2%2C_3_%26_4_Complete_(v2.0.0)-00C853?style=flat-square)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/Release-v2.0.0-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
@@ -17,7 +17,7 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 [⚡ Try the Hosted Streamlit Dashboard](https://haiox-smart-miner-review.streamlit.app/) · Or run locally via `streamlit run streamlit_app.py`.
 
-> **v1.8.0 · Phase 1, 2 & 3 Complete (22/22 Subsystems Merged).** 195/195 passing offline tests, zero network socket leaks, 19,000 ops/s JSON-LD graph unrolling, AST noise stripping, 2D matrix table expansion, monotonic heading hierarchy gap repair, semantic density scoring, OpenGraph metadata harvesting, deterministic SHA-256 evidence grounding, Playwright context pooling (<150ms per context), 120,000 ops/s route resource blocking (80% RAM cut), stealth driver anti-bot shims, Turnstile/Datadome diagnostics, infinite scroll emulation, and cryptographic visual evidence capture. Zero LLM dependencies required for complete local document parsing.
+> **v2.0.0 Capstone Release · All 4 Phases Complete (30/30 Subsystems Merged).** 218/218 passing offline tests, zero network socket leaks, standalone `smart-miner` CLI, enterprise FastAPI microservice with SSE streaming, multi-stage production Docker container, Prometheus metrics exporter (`/metrics`), domain rate-limiting batch queue, Playwright context pooling (<150ms), 120,000+ ops/s route resource blocking (80% RAM cut), stealth driver anti-bot shims, Turnstile/Datadome barrier diagnostics, infinite scroll emulation, and cryptographic visual evidence capture. Zero LLM dependencies required for complete local document parsing.
 
 ---
 
@@ -305,6 +305,48 @@ asyncio.run(main())
 
 ---
 
+## 💻 Standalone CLI Usage (`smart-miner`)
+
+Haiox Smart Miner ships with an enterprise CLI for direct terminal automation, ingestion, and local benchmarking:
+
+```bash
+# 1. Ingest a webpage to Markdown
+smart-miner crawl https://haiox.ai
+
+# 2. Dynamic execution with Playwright context pool, stealth, and JSON output
+smart-miner crawl https://haiox.ai --dynamic --format json -o output.json
+
+# 3. Print brief grounding summary (Title, Author, Reading Time, SHA-256)
+smart-miner crawl https://haiox.ai --format summary
+
+# 4. Launch the production FastAPI microservice
+smart-miner serve --host 0.0.0.0 --port 8000
+
+# 5. Run architectural micro-benchmarks across all 4 phases
+smart-miner benchmark --phase all
+```
+
+---
+
+## 🌐 Enterprise Microservice & Docker Deployment
+
+### 1. Launch with Docker Compose
+Run the containerized microservice with hard resource bounds (`1024M RAM`, `1.5 CPUs`) and an unprivileged user:
+
+```bash
+docker compose up -d --build
+```
+
+### 2. Microservice API Endpoints
+* **`GET /health`**: Health status, version, and uptime counters.
+* **`GET /metrics`**: Prometheus-compatible scrape endpoint tracking requests, latencies, and barrier detections.
+* **`POST /v1/crawl`**: Ingest a single URL synchronously into `CleanDocument` & `EvidenceArtifact`.
+* **`POST /v1/crawl/batch`**: Submit up to 50 URLs for parallel background ingestion with domain rate-limiting.
+* **`GET /v1/crawl/batch/{job_id}`**: Check batch crawl progress and retrieve structured results.
+* **`GET /v1/crawl/stream?url=...`**: Real-time Server-Sent Events (SSE) streaming progress.
+
+---
+
 ## 🛡️ Enterprise Security & Resilience Principles
 
 - **Zero-Trust URL Resolution:** All target hostnames and redirects are validated against loopback (`127.0.0.1`), private RFC1918 subnets, and cloud metadata services (`169.254.169.254`) before any HTTP socket or browser context is opened.
@@ -317,7 +359,7 @@ asyncio.run(main())
 
 ## 🤝 Contributing
 
-Contributions, issues, and security disclosures are welcome. Before submitting a pull request, ensure all 195 tests pass:
+Contributions, issues, and security disclosures are welcome. Before submitting a pull request, ensure all 218 tests pass:
 
 ```bash
 python -m unittest discover -s tests -v

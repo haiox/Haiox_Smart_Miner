@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  smart-miner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: haiox-smart-miner
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=info
+    deploy:
+      resources:
+        limits:
+          cpus: "1.50"
+          memory: 1024M
+        reservations:
+          cpus: "0.50"
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - haiox-network
+
+networks:
+  haiox-network:
+    driver: bridge

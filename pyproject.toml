@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "haiox-smart-miner"
-version = "1.8.0"
-description = "Hybrid HTTP/browser single-page extraction and local document cleaning"
+version = "2.0.0"
+description = "Enterprise Zero-Trust Web Ingestion & Structural Parsing Engine (Top-10 Web Miner)"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
@@ -19,7 +19,11 @@ dependencies = [
 
 [project.optional-dependencies]
 browser = ["playwright>=1.50,<2"]
+api = ["fastapi>=0.110,<1", "uvicorn>=0.29,<1", "starlette>=0.36,<1"]
 demo = ["streamlit>=1.35,<2"]
+
+[project.scripts]
+smart-miner = "smart_miner.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

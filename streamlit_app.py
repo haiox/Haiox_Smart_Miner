@@ -85,7 +85,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox AI Trilogy · Phase 2 Active (148/148 Tests · AST, Tables, Outline, Density, Metadata & JSON-LD Graph)</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox AI Trilogy · v2.0.0 Capstone (218/218 Passing Tests · Zero-Trust Shield, 7-Stage Parser, Anti-Bot & Enterprise API)</div>',
     unsafe_allow_html=True,
 )
 
@@ -109,13 +109,13 @@ with st.sidebar:
 
     st.markdown("#### ⚡ Transport & Network Engine")
     st.caption("• **Engine:** AST DOM Cleaner + Tables + Metadata + JSON-LD Resolver")
-    st.caption("• **Status:** Phase 2 Active (Subsystems 13/15)")
+    st.caption("• **Status:** v2.0.0 Capstone (Phases 1-4 Complete)")
     st.caption("• **Fingerprint:** Coherent Chrome/Edge/Firefox/Safari Profiles")
     st.caption("• **Retry:** Exponential Backoff & Full Jitter (429/5xx)")
     st.caption("• **DNS:** In-Memory TTL Cache with Multi-IP Fast Fallback")
     st.caption("• **Limits:** 100 max connections, 20 keep-alive")
     st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
-    st.caption("• **Tests:** 148/148 Tests PASS · Zero Leaks")
+    st.caption("• **Tests:** 218/218 Tests PASS · Zero Leaks")
 
     st.divider()
     st.header("🤖 OpenRouter AI Extraction (Optional)")

@@ -9,9 +9,11 @@ from pydantic import BaseModel, Field
 try:
     from .ast_cleaner import ASTCleaner, ASTCleanReport
     from .tables import TableNormalizer, TableData
+    from .headings import HeadingHierarchyExtractor, DocumentOutline
 except ImportError:
     from ast_cleaner import ASTCleaner, ASTCleanReport
     from tables import TableNormalizer, TableData
+    from headings import HeadingHierarchyExtractor, DocumentOutline
 
 
 class CleanDocument(BaseModel):
@@ -25,6 +27,7 @@ class CleanDocument(BaseModel):
     output_character_count: int
     noise_reduction_percentage: float = 0.0
     tables: list[TableData] = Field(default_factory=list)
+    outline: DocumentOutline = Field(default_factory=DocumentOutline)
 
     def extraction_text(self):
         text = f"Source: {self.source_url}\n"
@@ -76,11 +79,13 @@ class DocumentCleaner:
         prefer_main: bool = False,
         ast_cleaner: ASTCleaner | None = None,
         table_normalizer: TableNormalizer | None = None,
+        heading_extractor: HeadingHierarchyExtractor | None = None,
         normalize_tables: bool = False,
     ):
         self.prefer_main = prefer_main
         self.ast_cleaner = ast_cleaner or ASTCleaner()
         self.table_normalizer = table_normalizer or TableNormalizer()
+        self.heading_extractor = heading_extractor or HeadingHierarchyExtractor()
         self.normalize_tables = normalize_tables
 
     def clean(self, page, *, structured_fallback=True):
@@ -141,6 +146,7 @@ class DocumentCleaner:
                 node.decompose()
             seen.add(signature)
         visible = soup.get_text(" ", strip=True)
+        outline = self.heading_extractor.extract_from_soup(soup, page_title=title)
         structured_tables = self.table_normalizer.extract_all_tables(soup)
         tables = []
         for table in soup.find_all("table"):
@@ -173,11 +179,15 @@ class DocumentCleaner:
                 markdown = metadata_markdown
                 visible = metadata_markdown
                 warnings.append("STRUCTURED_DATA_FALLBACK")
+                outline = self.heading_extractor.extract_from_markdown(markdown, page_title=title)
+        elif not outline.flat_headings and markdown:
+            outline = self.heading_extractor.extract_from_markdown(markdown, page_title=title)
         document = CleanDocument(source_url=page.source_url, title=title,
                                  markdown=markdown, visible_text=visible, json_ld=json_ld,
                                  warnings=warnings, input_character_count=len(page.html),
                                  output_character_count=0,
                                  noise_reduction_percentage=clean_report.noise_reduction_percentage,
-                                 tables=structured_tables)
+                                 tables=structured_tables,
+                                 outline=outline)
         document.output_character_count = len(document.extraction_text())
         return document

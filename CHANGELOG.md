@@ -4,6 +4,31 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.5.3] - 2026-10-21 (Phase 2: Subsystem 10/15)
+
+### 📑 Heading Hierarchy & Document Outline Synthesizer
+- **Heading Hierarchy Engine (`smart_miner.pipeline.headings`):**
+  - Architected `HeadingHierarchyExtractor`, `DocumentOutline`, and `HeadingItem` (Pydantic models) to reconstruct the document structure from raw HTML DOM or ATX Markdown.
+  - Implemented `slugify()` with full Unicode support (Latin, Persian, Arabic, and international character sets) and collision avoidance with numerical deduplication suffixes (`-1`, `-2`).
+  - Added hierarchy gap repair (`repair_gaps=True`): normalizes illegal heading depth skips (e.g. H1 followed immediately by H4 maps to normalized H1 -> H2) creating strict, valid tree structures without losing original levels.
+  - Generates GFM Tables of Contents (`to_markdown_toc()`) with configurable indentation and depth limits.
+  - Provides section breadcrumb resolution via `get_section_path(slug)` (e.g. `["Architecture", "Network Shield", "SSRF"]`).
+- **Pipeline Integration (`smart_miner.pipeline.document`):**
+  - Integrated `HeadingHierarchyExtractor` into `DocumentCleaner.clean()`.
+  - Added typed `outline: DocumentOutline` field to `CleanDocument` Pydantic model with seamless serialization and deserialization guarantees.
+  - Automated fallback extraction from Markdown if visible body HTML is substituted by structured data fallback.
+- **Package Exports (`smart_miner.__init__` & `smart_miner.pipeline.__init__`):**
+  - Exported `HeadingItem`, `DocumentOutline`, `HeadingHierarchyExtractor`, and `slugify`.
+- **Test Suite Expansion (`tests/test_headings.py`):**
+  - Added 11 unit and integration tests covering Unicode/Persian slugification, hidden badge/screen-reader noise removal, linear tree hierarchy construction, slug collision handling, empty/oversized heading pruning, hierarchy gap repair, explicit anchor preservation, ATX markdown extraction, GFM TOC generation, section breadcrumbs, and full `CleanDocument` Pydantic JSON roundtrips.
+  - Full test suite expanded from 114 to **125 automated tests** (100% PASS in ~3.9s).
+- **Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.5.3` with `📑 Heading Hierarchy (Subsystem 10/15)` header badge.
+  - Added expandable Document Outline viewer in the Clean Content tab.
+  - Injected `heading_hierarchy_synthesizer: ACTIVE` and `headings_extracted` counter to diagnostics panel.
+
+---
+
 ## [1.5.2] - 2026-10-21 (Phase 2: Subsystem 9/15)
 
 ### 📊 Advanced Table & Tabular Data Markdown Normalizer

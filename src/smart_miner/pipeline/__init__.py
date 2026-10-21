@@ -3,6 +3,7 @@
 try:
     from .ast_cleaner import ASTCleaner, ASTCleanReport
     from .tables import TableNormalizer, TableData
+    from .headings import HeadingItem, DocumentOutline, HeadingHierarchyExtractor, slugify
     from .document import CleanDocument, DocumentCleaner
     from .extractor import StructuredExtractor
     from .orchestrator import CrawlOrchestrator
@@ -11,6 +12,10 @@ except (ImportError, ModuleNotFoundError):
     ASTCleanReport = None  # type: ignore
     TableNormalizer = None  # type: ignore
     TableData = None  # type: ignore
+    HeadingItem = None  # type: ignore
+    DocumentOutline = None  # type: ignore
+    HeadingHierarchyExtractor = None  # type: ignore
+    slugify = None  # type: ignore
     CleanDocument = None  # type: ignore
     DocumentCleaner = None  # type: ignore
     StructuredExtractor = None  # type: ignore
@@ -21,6 +26,10 @@ __all__ = [
     "ASTCleanReport",
     "TableNormalizer",
     "TableData",
+    "HeadingItem",
+    "DocumentOutline",
+    "HeadingHierarchyExtractor",
+    "slugify",
     "CleanDocument",
     "DocumentCleaner",
     "StructuredExtractor",

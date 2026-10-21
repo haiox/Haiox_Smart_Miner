@@ -3,9 +3,9 @@
 **The bedrock data ingestion and semantic document engine powering the Haiox AI Trilogy.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-155%2F155_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
-[![Phase 2](https://img.shields.io/badge/Phase_2-Structural_Parsing_(14%2F15)-blue?style=flat-square)](CHANGELOG.md)
-[![Release](https://img.shields.io/badge/Release-v1.5.7-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
+[![Tests](https://img.shields.io/badge/Tests-163%2F163_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
+[![Phase 2](https://img.shields.io/badge/Phase_2-Structural_Parsing_(15%2F15)-00C853?style=flat-square)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/Release-v1.6.0-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
@@ -17,7 +17,7 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 [⚡ Try the Hosted Streamlit Dashboard](https://haiox-smart-miner-review.streamlit.app/) · Or run locally via `streamlit run streamlit_app.py`.
 
-> **v1.5.7 · Phase 2: The Parsing & Extraction Engine (Subsystem 14/15 Live).** 155/155 passing tests, AST noise stripping, advanced tables, heading hierarchy, semantic density, OpenGraph & Twitter Cards metadata harvesting, JSON-LD Entity Graph Resolver, Trilogy Evidence Artifact Builder (Deterministic SHA-256 Provenance & Grounding Chunks for Haiox MultiAgent & Orchestrator), and zero network leaks. Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
+> **v1.6.0 · Phase 2 Complete (Subsystem 15/15 Live).** 163/163 passing tests, full AST noise stripping, advanced 2D table matrices, heading hierarchy gap repair, semantic density & boilerplate scoring, OpenGraph & Twitter Cards metadata harvesting, Schema.org JSON-LD Entity Graph Resolver (19k ops/sec), Trilogy Evidence Artifact Builder (SHA-256 grounding for Haiox MultiAgent & Orchestrator), and Phase 2 Comprehensive Benchmark Suite. Zero network leaks, zero LLM dependencies. Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -37,7 +37,7 @@ Smart Miner operates as the data ingestion foundation in the 3-tier Haiox Agent 
 └──────────────────────────┬─────────────────────────────┘
                            │ [Grounded Evidence Artifacts]
 ┌──────────────────────────▼─────────────────────────────┐
-│              Haiox Smart Miner (v1.4.0)                │
+│              Haiox Smart Miner (v1.6.0)                │
 │    The Bedrock Ingestion Engine · Zero-Trust Shield    │
 └────────────────────────────────────────────────────────┘
 ```

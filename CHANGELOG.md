@@ -4,6 +4,31 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.5.7] - 2026-10-21 (Phase 2: Subsystem 14/15)
+
+### 📦 Trilogy Evidence Artifact Builder & Grounding Packager
+- **Evidence Artifact & Grounding Engine (`smart_miner.pipeline.evidence`):**
+  - Architected `EvidenceArtifact`, `EvidenceChunk`, `EvidenceProvenance`, and `EvidenceBuilder` (Pydantic models) to provide mathematical provenance guarantees for downstream consumption by `Haiox MultiAgent` and `Haiox Orchestrator`.
+  - Cryptographic SHA-256 fingerprinting: computes deterministic digests of the entire clean markdown document and each individual grounding chunk, enabling zero-trust tamper verification (`verify_integrity()`).
+  - Context-aware token chunking: splits cleaned documents by ATX headings and paragraph boundaries into token-budget-bounded segments (`EvidenceChunk`) with tracking of section heading context, character counts, and estimated LLM tokens.
+  - Standardized GFM XML prompt formatting: `format_grounding_prompt(max_tokens=None)` renders prompt-ready `<haiox_evidence>` blocks with `<metadata>` headers and indexed `<chunk>` elements, supporting automatic context budget truncation without breaking document integrity.
+  - Comprehensive source provenance audit: records fetch strategy (`static`, `browser`, `metadata`), HTTP status code, millisecond timing breakdown, SSRF security validation status, bounded stream verification, and active browser fingerprint.
+  - Entities summary synthesis: aggregates counts and types of extracted tables, headings, and JSON-LD Schema.org entities directly into the artifact.
+- **Pipeline Integration (`smart_miner.pipeline.document` & `smart_miner.pipeline.orchestrator`):**
+  - Injected `to_evidence_artifact(...)` method onto `CleanDocument` model with configurable chunk token limits.
+  - Integrated evidence packaging directly into `CrawlOrchestrator.run()` and `route()`, returning ready-to-use `"evidence"` payload dictionaries in ingestion results.
+- **Package Exports (`smart_miner.__init__` & `smart_miner.pipeline.__init__`):**
+  - Exported `EvidenceArtifact`, `EvidenceChunk`, `EvidenceProvenance`, and `EvidenceBuilder`.
+- **Test Suite Expansion (`tests/test_evidence.py`):**
+  - Added 7 unit and integration tests covering SHA-256 integrity verification, heading-based chunk splitting, oversized section paragraph chunking, XML grounding prompt rendering with token budget truncation, `CleanDocument.to_evidence_artifact()` roundtrips, and full `route()` integration.
+  - Full test suite expanded from 148 to **155 automated tests** (100% PASS in ~4.3s).
+- **Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.5.7` with `📦 Evidence Artifact (Subsystem 14/15)` header badge.
+  - Overhauled the "📦 Evidence Artifact" tab to render interactive metrics (SHA-256 digest, tokens, characters, chunk count), a copyable GFM XML prompt codeblock, an expandable chunk inspector with section headers, and the provenance audit trail.
+  - Injected `evidence_packager: ACTIVE` into the engine diagnostics panel.
+
+---
+
 ## [1.5.6] - 2026-10-21 (Phase 2: Subsystem 13/15)
 
 ### 🕸️ JSON-LD Entity Graph Resolver & Schema.org Canonical Normalizer

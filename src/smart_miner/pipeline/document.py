@@ -14,6 +14,7 @@ try:
     from .density import SemanticDensityScorer, SemanticDensityReport
     from .metadata import MetadataHarvester, MetadataHarvest
     from .jsonld import JSONLDResolver, ResolvedEntityGraph
+    from .evidence import EvidenceArtifact, EvidenceBuilder
 except ImportError:
     from ast_cleaner import ASTCleaner, ASTCleanReport
     from tables import TableNormalizer, TableData
@@ -21,6 +22,7 @@ except ImportError:
     from density import SemanticDensityScorer, SemanticDensityReport
     from metadata import MetadataHarvester, MetadataHarvest
     from jsonld import JSONLDResolver, ResolvedEntityGraph
+    from evidence import EvidenceArtifact, EvidenceBuilder
 
 
 class CleanDocument(BaseModel):
@@ -47,6 +49,29 @@ class CleanDocument(BaseModel):
         if self.json_ld and "STRUCTURED_DATA_FALLBACK" not in self.warnings:
             text += "\n\nJSON-LD (source claims, not verified):\n" + json.dumps(self.json_ld, ensure_ascii=False)
         return text
+
+    def to_evidence_artifact(
+        self,
+        strategy: str = "static",
+        status_code: int = 200,
+        timing_ms: dict | None = None,
+        security_verified: bool = True,
+        bounded_stream_verified: bool = True,
+        fingerprint_mode: str = "balanced",
+        chunk_token_limit: int | None = None,
+    ) -> EvidenceArtifact:
+        """Produce a standardized, cryptographically verifiable EvidenceArtifact for Haiox Trilogy."""
+        builder = EvidenceBuilder()
+        return builder.build_artifact(
+            document=self,
+            strategy=strategy,
+            status_code=status_code,
+            timing_ms=timing_ms,
+            security_verified=security_verified,
+            bounded_stream_verified=bounded_stream_verified,
+            fingerprint_mode=fingerprint_mode,
+            chunk_token_limit=chunk_token_limit,
+        )
 
 
 def structured_data_markdown(items):

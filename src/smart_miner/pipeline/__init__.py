@@ -7,6 +7,7 @@ try:
     from .density import SemanticDensityScorer, SemanticDensityReport
     from .metadata import MetadataHarvester, MetadataHarvest
     from .jsonld import JSONLDResolver, ResolvedEntityGraph, ArticleEntity, ProductEntity, FAQItem
+    from .evidence import EvidenceArtifact, EvidenceChunk, EvidenceProvenance, EvidenceBuilder
     from .document import CleanDocument, DocumentCleaner
     from .extractor import StructuredExtractor
     from .orchestrator import CrawlOrchestrator
@@ -28,6 +29,10 @@ except (ImportError, ModuleNotFoundError):
     ArticleEntity = None  # type: ignore
     ProductEntity = None  # type: ignore
     FAQItem = None  # type: ignore
+    EvidenceArtifact = None  # type: ignore
+    EvidenceChunk = None  # type: ignore
+    EvidenceProvenance = None  # type: ignore
+    EvidenceBuilder = None  # type: ignore
     CleanDocument = None  # type: ignore
     DocumentCleaner = None  # type: ignore
     StructuredExtractor = None  # type: ignore
@@ -51,6 +56,10 @@ __all__ = [
     "ArticleEntity",
     "ProductEntity",
     "FAQItem",
+    "EvidenceArtifact",
+    "EvidenceChunk",
+    "EvidenceProvenance",
+    "EvidenceBuilder",
     "CleanDocument",
     "DocumentCleaner",
     "StructuredExtractor",

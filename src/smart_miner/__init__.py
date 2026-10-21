@@ -9,6 +9,7 @@ try:
     from .pipeline.density import SemanticDensityScorer, SemanticDensityReport
     from .pipeline.metadata import MetadataHarvester, MetadataHarvest
     from .pipeline.jsonld import JSONLDResolver, ResolvedEntityGraph, ArticleEntity, ProductEntity, FAQItem
+    from .pipeline.evidence import EvidenceArtifact, EvidenceChunk, EvidenceProvenance, EvidenceBuilder
     from .pipeline.document import CleanDocument, DocumentCleaner
     from .pipeline.extractor import StructuredExtractor
     from .pipeline.orchestrator import CrawlOrchestrator
@@ -30,6 +31,10 @@ except ModuleNotFoundError:
     ArticleEntity = None
     ProductEntity = None
     FAQItem = None
+    EvidenceArtifact = None
+    EvidenceChunk = None
+    EvidenceProvenance = None
+    EvidenceBuilder = None
     CleanDocument = None
     DocumentCleaner = None
     StructuredExtractor = None
@@ -54,6 +59,10 @@ __all__ = [
     "ArticleEntity",
     "ProductEntity",
     "FAQItem",
+    "EvidenceArtifact",
+    "EvidenceChunk",
+    "EvidenceProvenance",
+    "EvidenceBuilder",
     "CleanDocument",
     "DocumentCleaner",
     "StructuredExtractor",

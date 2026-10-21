@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "haiox-smart-miner"
-version = "1.5.6"
+version = "1.5.7"
 description = "Hybrid HTTP/browser single-page extraction and local document cleaning"
 readme = "README.md"
 requires-python = ">=3.11"

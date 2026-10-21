@@ -22,7 +22,7 @@ if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 try:
-    from smart_miner import CleanDocument, DocumentCleaner, StructuredExtractor, route
+    from smart_miner import CleanDocument, DocumentCleaner, StructuredExtractor, route, EvidenceArtifact, EvidenceBuilder
     from smart_miner.crawler.security import is_public_ip, validate_url_target
 except ImportError:
     st.error("Smart Miner package not found. Run: pip install -e .")
@@ -67,7 +67,7 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner v1.5.6 '
+    '<div class="main-header">⚡ Haiox Smart Miner v1.5.7 '
     '<span class="security-badge" style="border-color: #00c853; background-color: #082914; color: #55f79a;">✅ Phase 1 Complete (7/7)</span> '
     '<span class="security-badge" style="border-color: #0dcaf0; background-color: #052c38; color: #6edff6;">🧹 AST Cleaner (Subsystem 8/15)</span> '
     '<span class="security-badge" style="border-color: #e83e8c; background-color: #2b0d1e; color: #f783ac;">📊 Table Normalizer (Subsystem 9/15)</span> '
@@ -75,6 +75,7 @@ st.markdown(
     '<span class="security-badge" style="border-color: #17a2b8; background-color: #0c2b33; color: #5bc0de;">🎯 Density Scorer (Subsystem 11/15)</span> '
     '<span class="security-badge" style="border-color: #6610f2; background-color: #1a0833; color: #b197fc;">🏷️ Metadata Harvester (Subsystem 12/15)</span> '
     '<span class="security-badge" style="border-color: #d63384; background-color: #33081c; color: #f783ac;">🕸️ JSON-LD Resolver (Subsystem 13/15)</span> '
+    '<span class="security-badge" style="border-color: #20c997; background-color: #0d2e26; color: #63e6be;">📦 Evidence Artifact (Subsystem 14/15)</span> '
     '<span class="security-badge">🛡️ SSRF Shield</span> '
     '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Pool</span> '
     '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span> '
@@ -148,7 +149,7 @@ with st.sidebar:
         - **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** Governed Workflow
         """
     )
-    st.caption("Architecture Dashboard · v1.4.0 (Phase 1: The Network Shield Complete)")
+    st.caption("Architecture Dashboard · v1.5.7 (Phase 2: Subsystem 14/15 Live)")
 
 # Main URL Input Area
 col_url, col_btn = st.columns([5, 1])
@@ -345,30 +346,53 @@ if mine_clicked and target_url:
             st.info("No metadata available.")
 
     with t_evidence:
-        st.markdown("#### Evidence Artifact for Haiox Orchestrator & MultiAgent")
-        st.caption("Normalized context-grounding packet with content hash and source provenance.")
-        doc_data = res.get("document") or {}
-        content = doc_data.get("markdown") or res.get("text", "")
-        content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest() if content else ""
+        st.markdown("#### 📦 Trilogy Evidence Artifact & Grounding Packager")
+        st.caption("Deterministic SHA-256 context-grounding packet with provenance for Haiox MultiAgent & Orchestrator.")
+        ev_data = res.get("evidence")
+        if not ev_data and res.get("document"):
+            try:
+                c_doc = CleanDocument.model_validate(res["document"])
+                artifact_obj = c_doc.to_evidence_artifact(
+                    strategy=strategy,
+                    status_code=status,
+                    timing_ms=timings,
+                    security_verified=not any(c in {"NON_PUBLIC_ADDRESS", "INVALID_SCHEME"} for c in reasons),
+                    bounded_stream_verified="PAGE_TOO_LARGE" not in reasons,
+                    fingerprint_mode=fingerprint_mode,
+                )
+                ev_data = artifact_obj.model_dump()
+            except Exception:
+                ev_data = None
 
-        evidence_record = {
-            "source_url": target_url,
-            "provenance": {
-                "strategy": strategy,
-                "content_hash": f"sha256:{content_hash}",
-                "timing_ms": timings,
-                "status": status,
-                "security_verified": not any(c in {"NON_PUBLIC_ADDRESS", "INVALID_SCHEME"} for c in reasons),
-                "bounded_stream_verified": "PAGE_TOO_LARGE" not in reasons,
-            },
-            "grounding_summary": {
-                "title": doc_data.get("title", ""),
-                "char_count": len(content),
-                "estimated_tokens": max(1, len(content) // 4),
-            },
-            "content_preview": content[:400] + ("..." if len(content) > 400 else ""),
-        }
-        st.json(evidence_record)
+        if ev_data:
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("SHA-256 Digest", ev_data["content_sha256"][:12] + "...")
+            c2.metric("Total Characters", f"{ev_data['total_chars']:,}")
+            c3.metric("Estimated Tokens", f"{ev_data['total_estimated_tokens']:,}")
+            c4.metric("Grounding Chunks", len(ev_data.get("chunks", [])))
+
+            st.write(f"**Full SHA-256:** `{ev_data['content_sha256']}`")
+            
+            # Grounding prompt for LLM injection
+            with st.expander("🤖 Standardized GFM XML Grounding Prompt (Direct LLM Injection)", expanded=True):
+                art_instance = EvidenceArtifact.model_validate(ev_data)
+                prompt_text = art_instance.format_grounding_prompt()
+                st.code(prompt_text, language="xml")
+
+            # Grounding chunks browser
+            chunks = ev_data.get("chunks", [])
+            if chunks:
+                with st.expander(f"🧩 Bounded Grounding Chunks ({len(chunks)})", expanded=False):
+                    for chk in chunks:
+                        st.markdown(f"**Chunk #{chk['chunk_index']} — Section: `{chk['section_heading']}`**")
+                        st.caption(f"ID: `{chk['chunk_id']}` | Tokens: ~{chk['estimated_tokens']} | SHA256: `{chk['chunk_sha256'][:16]}...`")
+                        st.text_area(f"Content #{chk['chunk_index']}", chk['content'], height=120, key=f"chunk_txt_{chk['chunk_id']}")
+                        st.divider()
+
+            with st.expander("🛡️ Evidence Provenance & Audit Trail", expanded=False):
+                st.json(ev_data.get("provenance", {}))
+        else:
+            st.info("No evidence artifact available for this fetch.")
 
     with t_ai:
         st.markdown("#### Provider-Independent Schema Validation")
@@ -442,6 +466,7 @@ if mine_clicked and target_url:
             "semantic_density_scorer": "ACTIVE (Text-to-Tag & Link Density Boilerplate Pruner)",
             "metadata_harvester": "ACTIVE (OpenGraph, Twitter Cards, Canonical & Timestamps)",
             "jsonld_graph_resolver": "ACTIVE (Cross-Node @id References & Canonical Entities)",
+            "evidence_packager": "ACTIVE (Deterministic SHA-256 Provenance & Grounding Chunks)",
             "dom_noise_reduction": f"{res.get('document', {}).get('noise_reduction_percentage', 0.0)}%",
             "semantic_density_score": res.get("document", {}).get("density", {}).get("semantic_density_score", 0.0) if res.get("document") else 0.0,
             "overall_text_density": res.get("document", {}).get("density", {}).get("overall_text_density", 0.0) if res.get("document") else 0.0,

@@ -107,6 +107,7 @@ class CrawlOrchestrator:
                         strategy = "metadata"
                         reasons = ["BROWSER_CONTENT_UNAVAILABLE",
                                    "STRUCTURED_DATA_FALLBACK"]
+                        document = backup
                         result.update(success=True, status="ok",
                                       text=backup.visible_text,
                                       document=backup.model_dump())
@@ -137,6 +138,22 @@ class CrawlOrchestrator:
             result.update(success=False, status="failed", error=type(exc).__name__)
             reasons = [failure_reason(exc)]
         timings["total"] = round((perf_counter() - started) * 1000, 2)
+        if result.get("success") and document is not None and hasattr(document, "to_evidence_artifact"):
+            try:
+                artifact = document.to_evidence_artifact(
+                    strategy=strategy,
+                    status_code=getattr(page, "status_code", 200) if 'page' in locals() and page else 200,
+                    timing_ms=timings,
+                    security_verified=not any(c in {"NON_PUBLIC_ADDRESS", "INVALID_SCHEME"} for c in reasons),
+                    bounded_stream_verified="PAGE_TOO_LARGE" not in reasons,
+                    fingerprint_mode=getattr(self.fetcher, "active_profile_name", "chrome_windows"),
+                )
+                result["evidence"] = artifact.model_dump()
+            except Exception:
+                result["evidence"] = None
+        else:
+            result["evidence"] = None
+
         result["routing"] = {
             "fingerprint": getattr(self.fetcher, "active_profile_name", "chrome_windows"),
             "strategy": strategy if result["success"] else "failed",

@@ -67,12 +67,13 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="main-header">⚡ Haiox Smart Miner v1.5.4 '
+    '<div class="main-header">⚡ Haiox Smart Miner v1.5.5 '
     '<span class="security-badge" style="border-color: #00c853; background-color: #082914; color: #55f79a;">✅ Phase 1 Complete (7/7)</span> '
     '<span class="security-badge" style="border-color: #0dcaf0; background-color: #052c38; color: #6edff6;">🧹 AST Cleaner (Subsystem 8/15)</span> '
     '<span class="security-badge" style="border-color: #e83e8c; background-color: #2b0d1e; color: #f783ac;">📊 Table Normalizer (Subsystem 9/15)</span> '
     '<span class="security-badge" style="border-color: #ffc107; background-color: #332701; color: #ffe066;">📑 Heading Hierarchy (Subsystem 10/15)</span> '
     '<span class="security-badge" style="border-color: #17a2b8; background-color: #0c2b33; color: #5bc0de;">🎯 Density Scorer (Subsystem 11/15)</span> '
+    '<span class="security-badge" style="border-color: #6610f2; background-color: #1a0833; color: #b197fc;">🏷️ Metadata Harvester (Subsystem 12/15)</span> '
     '<span class="security-badge">🛡️ SSRF Shield</span> '
     '<span class="security-badge" style="border-color: #0d6efd; background-color: #082142; color: #6ea8fe;">⚡ HTTPX Pool</span> '
     '<span class="security-badge" style="border-color: #6f42c1; background-color: #211138; color: #d8b4fe;">🎭 Fingerprint Matrix</span> '
@@ -82,7 +83,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox AI Trilogy · Phase 2 Active (133/133 Tests · AST Noise Stripper, Tables, Outline & Semantic Density)</div>',
+    '<div class="sub-header">Bedrock Ingestion Engine for the Haiox AI Trilogy · Phase 2 Active (140/140 Tests · AST, Tables, Outline, Density & Metadata)</div>',
     unsafe_allow_html=True,
 )
 
@@ -105,14 +106,14 @@ with st.sidebar:
     wait_selector = st.text_input("Custom Wait Selector (Optional)", value="")
 
     st.markdown("#### ⚡ Transport & Network Engine")
-    st.caption("• **Engine:** AST DOM Cleaner + Table Normalizer + Outline + Density Scorer")
-    st.caption("• **Status:** Phase 2 Active (Subsystems 11/15)")
+    st.caption("• **Engine:** AST DOM Cleaner + Tables + Outline + Metadata Harvester")
+    st.caption("• **Status:** Phase 2 Active (Subsystems 12/15)")
     st.caption("• **Fingerprint:** Coherent Chrome/Edge/Firefox/Safari Profiles")
     st.caption("• **Retry:** Exponential Backoff & Full Jitter (429/5xx)")
     st.caption("• **DNS:** In-Memory TTL Cache with Multi-IP Fast Fallback")
     st.caption("• **Limits:** 100 max connections, 20 keep-alive")
     st.caption("• **Protocol:** HTTP/2 Multiplexing with TLS session reuse")
-    st.caption("• **Tests:** 133/133 Tests PASS · Zero Leaks")
+    st.caption("• **Tests:** 140/140 Tests PASS · Zero Leaks")
 
     st.divider()
     st.header("🤖 OpenRouter AI Extraction (Optional)")
@@ -282,11 +283,40 @@ if mine_clicked and target_url:
     with t_metadata:
         if res.get("document"):
             doc = res["document"]
+            meta = doc.get("metadata", {})
+            st.markdown("#### 🏷️ Social & Provenance Metadata (OpenGraph & Twitter Cards)")
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                st.write("**Author:**", meta.get("author") or "N/A")
+                st.write("**Published:**", meta.get("published_time") or "N/A")
+                st.write("**Modified:**", meta.get("modified_time") or "N/A")
+            with c2:
+                st.write("**Site Name:**", meta.get("site_name") or "N/A")
+                st.write("**OG Type:**", meta.get("og_type") or "N/A")
+                st.write("**Locale:**", meta.get("locale") or "N/A")
+            with c3:
+                st.write("**Est. Reading Time:**", f"{meta.get('reading_time_minutes', 1)} min")
+                st.write("**Twitter Card:**", meta.get("twitter_card") or "N/A")
+                st.write("**Twitter Creator:**", meta.get("twitter_creator") or "N/A")
+            
+            if meta.get("canonical_url"):
+                st.write("**Canonical URL:**", meta["canonical_url"])
+            if meta.get("description"):
+                st.info(f"**Description:** {meta['description']}")
+            if meta.get("keywords"):
+                st.write("**Keywords / Tags:**", ", ".join(meta["keywords"]))
+            if meta.get("image_url"):
+                st.caption(f"Feature Image: {meta['image_url']}")
+
+            st.divider()
             st.write("**Document Title:**", doc.get("title", "N/A"))
             st.write("**Source URL:**", doc.get("source_url", target_url))
             st.write("**Warnings:**", doc.get("warnings", []))
             st.write("**JSON-LD Structured Records:**")
             st.json(doc.get("json_ld", []))
+            if meta.get("raw_meta"):
+                with st.expander("🔍 Raw Meta Tags Dictionary", expanded=False):
+                    st.json(meta["raw_meta"])
         else:
             st.info("No metadata available.")
 
@@ -386,6 +416,7 @@ if mine_clicked and target_url:
             "table_normalizer": "ACTIVE (Colspan/Rowspan Grid Expansion & GFM Tables)",
             "heading_hierarchy_synthesizer": "ACTIVE (Deterministic Slugs & Gap-Repair Outline Tree)",
             "semantic_density_scorer": "ACTIVE (Text-to-Tag & Link Density Boilerplate Pruner)",
+            "metadata_harvester": "ACTIVE (OpenGraph, Twitter Cards, Canonical & Timestamps)",
             "dom_noise_reduction": f"{res.get('document', {}).get('noise_reduction_percentage', 0.0)}%",
             "semantic_density_score": res.get("document", {}).get("density", {}).get("semantic_density_score", 0.0) if res.get("document") else 0.0,
             "overall_text_density": res.get("document", {}).get("density", {}).get("overall_text_density", 0.0) if res.get("document") else 0.0,

@@ -1,5 +1,6 @@
 """Reusable local document; no credentials, response headers or raw HTML retained."""
 import json
+import re
 from urllib.parse import urljoin, urlsplit
 
 from bs4 import BeautifulSoup, Comment
@@ -11,11 +12,13 @@ try:
     from .tables import TableNormalizer, TableData
     from .headings import HeadingHierarchyExtractor, DocumentOutline
     from .density import SemanticDensityScorer, SemanticDensityReport
+    from .metadata import MetadataHarvester, MetadataHarvest
 except ImportError:
     from ast_cleaner import ASTCleaner, ASTCleanReport
     from tables import TableNormalizer, TableData
     from headings import HeadingHierarchyExtractor, DocumentOutline
     from density import SemanticDensityScorer, SemanticDensityReport
+    from metadata import MetadataHarvester, MetadataHarvest
 
 
 class CleanDocument(BaseModel):
@@ -31,6 +34,7 @@ class CleanDocument(BaseModel):
     tables: list[TableData] = Field(default_factory=list)
     outline: DocumentOutline = Field(default_factory=DocumentOutline)
     density: SemanticDensityReport = Field(default_factory=SemanticDensityReport)
+    metadata: MetadataHarvest = Field(default_factory=MetadataHarvest)
 
     def extraction_text(self):
         text = f"Source: {self.source_url}\n"
@@ -84,6 +88,7 @@ class DocumentCleaner:
         table_normalizer: TableNormalizer | None = None,
         heading_extractor: HeadingHierarchyExtractor | None = None,
         density_scorer: SemanticDensityScorer | None = None,
+        metadata_harvester: MetadataHarvester | None = None,
         normalize_tables: bool = False,
         filter_boilerplate: bool = False,
     ):
@@ -92,6 +97,7 @@ class DocumentCleaner:
         self.table_normalizer = table_normalizer or TableNormalizer()
         self.heading_extractor = heading_extractor or HeadingHierarchyExtractor()
         self.density_scorer = density_scorer or SemanticDensityScorer()
+        self.metadata_harvester = metadata_harvester or MetadataHarvester()
         self.normalize_tables = normalize_tables
         self.filter_boilerplate = filter_boilerplate
 
@@ -114,6 +120,9 @@ class DocumentCleaner:
                 warnings.append("INVALID_JSON_LD")
         base = soup.find("base", href=True)
         base_url = urljoin(page.source_url, base["href"]) if base else page.source_url
+        metadata_harvest = self.metadata_harvester.harvest(soup, base_url)
+        if metadata_harvest.title and not title:
+            title = metadata_harvest.title
         # Malformed pages may place <title> outside <head>; it is metadata,
         # never visible article content.
         for node in soup(["head", "title"]):
@@ -190,6 +199,9 @@ class DocumentCleaner:
                 outline = self.heading_extractor.extract_from_markdown(markdown, page_title=title)
         elif not outline.flat_headings and markdown:
             outline = self.heading_extractor.extract_from_markdown(markdown, page_title=title)
+        if visible and not metadata_harvest.reading_time_minutes:
+            words = len(re.findall(r"\w+", visible))
+            metadata_harvest.reading_time_minutes = max(1, round(words / self.metadata_harvester.words_per_minute))
         document = CleanDocument(source_url=page.source_url, title=title,
                                  markdown=markdown, visible_text=visible, json_ld=json_ld,
                                  warnings=warnings, input_character_count=len(page.html),
@@ -197,6 +209,7 @@ class DocumentCleaner:
                                  noise_reduction_percentage=clean_report.noise_reduction_percentage,
                                  tables=structured_tables,
                                  outline=outline,
-                                 density=density_report)
+                                 density=density_report,
+                                 metadata=metadata_harvest)
         document.output_character_count = len(document.extraction_text())
         return document

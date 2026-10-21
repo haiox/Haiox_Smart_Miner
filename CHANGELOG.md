@@ -4,6 +4,34 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.5.5] - 2026-10-21 (Phase 2: Subsystem 12/15)
+
+### 🏷️ OpenGraph, Twitter Cards & Semantic Metadata Harvester
+- **Semantic Metadata Harvester Engine (`smart_miner.pipeline.metadata`):**
+  - Architected `MetadataHarvester` and `MetadataHarvest` (Pydantic model) to extract structured provenance, social preview cards, and document attribution before `<head>` or `<title>` decomposition.
+  - Comprehensive OpenGraph harvesting: extracts `og:title`, `og:description`, `og:image`, `og:site_name`, `og:type`, `og:locale`, and `og:url`.
+  - Twitter Card parsing: extracts `twitter:card`, `twitter:creator`, `twitter:title`, `twitter:description`, and `twitter:image`.
+  - Authorship attribution & timestamps: harvests author names (`author`, `article:author`, `twitter:creator`) and ISO/publication timestamps (`article:published_time`, `article:modified_time`, `date`).
+  - Canonical and feature image URL resolution: automatically normalizes relative image paths and canonical links against the document's absolute base URL.
+  - Estimated reading time: dynamically calculates reading duration in minutes based on total narrative word count (~200 words/minute).
+  - Keywords & tag extraction: parses comma-separated `keywords` and `news_keywords` into clean list arrays.
+  - Full raw metadata dictionary preservation (`raw_meta`) for downstream inspection.
+- **Pipeline Integration (`smart_miner.pipeline.document`):**
+  - Integrated `MetadataHarvester` directly into `DocumentCleaner.clean()`.
+  - Executes metadata harvest prior to `<head>` and `<title>` decomposition, ensuring zero metadata loss.
+  - Added typed `metadata: MetadataHarvest` attribute to `CleanDocument` Pydantic model with 100% roundtrip serialization fidelity.
+- **Package Exports (`smart_miner.__init__` & `smart_miner.pipeline.__init__`):**
+  - Exported `MetadataHarvester` and `MetadataHarvest`.
+- **Test Suite Expansion (`tests/test_metadata.py`):**
+  - Added 7 unit and integration tests covering OpenGraph tags, Twitter Cards, canonical link resolution, author/timestamp parsing, keyword splitting, reading time estimation, and `CleanDocument` Pydantic roundtrip validation.
+  - Full test suite expanded from 133 to **140 automated tests** (100% PASS in ~4.2s).
+- **Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.5.5` with `🏷️ Metadata Harvester (Subsystem 12/15)` header badge.
+  - Overhauled "🏷️ Metadata & JSON-LD" tab to render structured OpenGraph previews, publication dates, author chips, and raw meta tag inspector.
+  - Added `metadata_harvester: ACTIVE` to the diagnostics panel.
+
+---
+
 ## [1.5.4] - 2026-10-21 (Phase 2: Subsystem 11/15)
 
 ### 🎯 Semantic Density & Boilerplate Scorer

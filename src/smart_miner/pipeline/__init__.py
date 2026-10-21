@@ -5,6 +5,7 @@ try:
     from .tables import TableNormalizer, TableData
     from .headings import HeadingItem, DocumentOutline, HeadingHierarchyExtractor, slugify
     from .density import SemanticDensityScorer, SemanticDensityReport
+    from .metadata import MetadataHarvester, MetadataHarvest
     from .document import CleanDocument, DocumentCleaner
     from .extractor import StructuredExtractor
     from .orchestrator import CrawlOrchestrator
@@ -19,6 +20,8 @@ except (ImportError, ModuleNotFoundError):
     slugify = None  # type: ignore
     SemanticDensityScorer = None  # type: ignore
     SemanticDensityReport = None  # type: ignore
+    MetadataHarvester = None  # type: ignore
+    MetadataHarvest = None  # type: ignore
     CleanDocument = None  # type: ignore
     DocumentCleaner = None  # type: ignore
     StructuredExtractor = None  # type: ignore
@@ -35,6 +38,8 @@ __all__ = [
     "slugify",
     "SemanticDensityScorer",
     "SemanticDensityReport",
+    "MetadataHarvester",
+    "MetadataHarvest",
     "CleanDocument",
     "DocumentCleaner",
     "StructuredExtractor",

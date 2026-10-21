@@ -8,6 +8,7 @@ try:
     from .pipeline.headings import HeadingItem, DocumentOutline, HeadingHierarchyExtractor, slugify
     from .pipeline.density import SemanticDensityScorer, SemanticDensityReport
     from .pipeline.metadata import MetadataHarvester, MetadataHarvest
+    from .pipeline.jsonld import JSONLDResolver, ResolvedEntityGraph, ArticleEntity, ProductEntity, FAQItem
     from .pipeline.document import CleanDocument, DocumentCleaner
     from .pipeline.extractor import StructuredExtractor
     from .pipeline.orchestrator import CrawlOrchestrator
@@ -24,6 +25,11 @@ except ModuleNotFoundError:
     SemanticDensityReport = None
     MetadataHarvester = None
     MetadataHarvest = None
+    JSONLDResolver = None
+    ResolvedEntityGraph = None
+    ArticleEntity = None
+    ProductEntity = None
+    FAQItem = None
     CleanDocument = None
     DocumentCleaner = None
     StructuredExtractor = None
@@ -43,6 +49,11 @@ __all__ = [
     "SemanticDensityReport",
     "MetadataHarvester",
     "MetadataHarvest",
+    "JSONLDResolver",
+    "ResolvedEntityGraph",
+    "ArticleEntity",
+    "ProductEntity",
+    "FAQItem",
     "CleanDocument",
     "DocumentCleaner",
     "StructuredExtractor",

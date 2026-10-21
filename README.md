@@ -3,9 +3,9 @@
 **The bedrock data ingestion and semantic document engine powering the Haiox AI Trilogy.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-140%2F140_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
-[![Phase 2](https://img.shields.io/badge/Phase_2-Structural_Parsing_(12%2F15)-blue?style=flat-square)](CHANGELOG.md)
-[![Release](https://img.shields.io/badge/Release-v1.5.5-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
+[![Tests](https://img.shields.io/badge/Tests-148%2F148_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
+[![Phase 2](https://img.shields.io/badge/Phase_2-Structural_Parsing_(13%2F15)-blue?style=flat-square)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/Release-v1.5.6-00C853?style=flat-square)](https://github.com/haiox/Haiox_Smart_Miner/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
@@ -17,7 +17,7 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 [⚡ Try the Hosted Streamlit Dashboard](https://haiox-smart-miner-review.streamlit.app/) · Or run locally via `streamlit run streamlit_app.py`.
 
-> **v1.5.5 · Phase 2: The Parsing & Extraction Engine (Subsystem 12/15 Live).** 140/140 passing tests, AST noise stripping, advanced tables, heading hierarchy, semantic density, OpenGraph & Twitter Cards metadata harvesting, and zero network leaks. Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
+> **v1.5.6 · Phase 2: The Parsing & Extraction Engine (Subsystem 13/15 Live).** 148/148 passing tests, AST noise stripping, advanced tables, heading hierarchy, semantic density, OpenGraph & Twitter Cards metadata harvesting, Schema.org JSON-LD Entity Graph Resolver (Cross-Node `@id` Unroller, Canonical Article/Product/FAQ/Breadcrumb Normalizer), and zero network leaks. Follow our 4-phase architectural roadmap in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 

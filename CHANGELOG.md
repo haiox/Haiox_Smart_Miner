@@ -4,6 +4,34 @@ All notable changes, architectural edges, and nightly builds are documented here
 
 ---
 
+## [1.5.6] - 2026-10-21 (Phase 2: Subsystem 13/15)
+
+### 🕸️ JSON-LD Entity Graph Resolver & Schema.org Canonical Normalizer
+- **JSON-LD Entity Graph Engine (`smart_miner.pipeline.jsonld`):**
+  - Architected `JSONLDResolver` and `ResolvedEntityGraph` (Pydantic model) for recursive unrolling of complex, deeply-nested Schema.org `@graph` trees and entity arrays.
+  - Multi-pass cross-node `@id` reference resolution: dynamically substitutes URI pointer dictionaries (e.g. `{"@id": "https://example.com/#author"}`) with the fully populated referenced entity node.
+  - Circular reference protection: incorporates recursion depth bounding (`max_resolution_depth=4`) and `seen_ids` visited sets to guarantee zero infinite loops or stack overflow errors on cyclic Schema.org graphs.
+  - Canonical entity extraction pipelines:
+    - **`ArticleEntity`**: normalizes headlines, descriptions, authors, publishers, publication dates, and canonical article bodies.
+    - **`ProductEntity`**: normalizes names, descriptions, brands, SKU, price, currency, availability (`InStock`, `OutOfStock`), and review ratings.
+    - **`FAQItem`**: transforms complex `FAQPage` question-answer pairs into clean, structured Q&A pairs.
+    - **`breadcrumbs`**: resolves hierarchical navigation items and position sequences into clean ordered paths.
+  - Type-safe detection of the primary canonical entity via `canonical_main_entity_type` inference.
+- **Pipeline Integration (`smart_miner.pipeline.document`):**
+  - Integrated `JSONLDResolver` into `DocumentCleaner.clean()`.
+  - Injected typed `json_ld_graph: ResolvedEntityGraph` field into `CleanDocument` model alongside legacy `json_ld` raw list, providing 100% backward and forward compatibility.
+- **Package Exports (`smart_miner.__init__` & `smart_miner.pipeline.__init__`):**
+  - Exported `JSONLDResolver`, `ResolvedEntityGraph`, `ArticleEntity`, `ProductEntity`, and `FAQItem`.
+- **Test Suite Expansion (`tests/test_jsonld.py`):**
+  - Added 8 comprehensive unit and integration tests covering nested graph unrolling, `@id` cross-referencing, circular reference protection, canonical article parsing, canonical product with nested offer/rating, FAQPage extraction, malformed JSON handling, and full `CleanDocument` Pydantic serialization roundtrips.
+  - Full test suite expanded from 140 to **148 automated tests** (100% PASS in ~3.6s).
+- **Review Dashboard (`streamlit_app.py`):**
+  - Updated to `v1.5.6` with `🕸️ Entity Graph Resolver (Subsystem 13/15)` header badge.
+  - Added structured "🕸️ JSON-LD Entity Graph Resolver" metrics and expanders in the metadata tab displaying resolved Articles, Products, FAQ items, and Breadcrumbs.
+  - Injected `jsonld_graph_resolver: ACTIVE` into the engine diagnostics panel.
+
+---
+
 ## [1.5.5] - 2026-10-21 (Phase 2: Subsystem 12/15)
 
 ### 🏷️ OpenGraph, Twitter Cards & Semantic Metadata Harvester

@@ -13,12 +13,14 @@ try:
     from .headings import HeadingHierarchyExtractor, DocumentOutline
     from .density import SemanticDensityScorer, SemanticDensityReport
     from .metadata import MetadataHarvester, MetadataHarvest
+    from .jsonld import JSONLDResolver, ResolvedEntityGraph
 except ImportError:
     from ast_cleaner import ASTCleaner, ASTCleanReport
     from tables import TableNormalizer, TableData
     from headings import HeadingHierarchyExtractor, DocumentOutline
     from density import SemanticDensityScorer, SemanticDensityReport
     from metadata import MetadataHarvester, MetadataHarvest
+    from jsonld import JSONLDResolver, ResolvedEntityGraph
 
 
 class CleanDocument(BaseModel):
@@ -35,6 +37,7 @@ class CleanDocument(BaseModel):
     outline: DocumentOutline = Field(default_factory=DocumentOutline)
     density: SemanticDensityReport = Field(default_factory=SemanticDensityReport)
     metadata: MetadataHarvest = Field(default_factory=MetadataHarvest)
+    json_ld_graph: ResolvedEntityGraph = Field(default_factory=ResolvedEntityGraph)
 
     def extraction_text(self):
         text = f"Source: {self.source_url}\n"
@@ -89,6 +92,7 @@ class DocumentCleaner:
         heading_extractor: HeadingHierarchyExtractor | None = None,
         density_scorer: SemanticDensityScorer | None = None,
         metadata_harvester: MetadataHarvester | None = None,
+        jsonld_resolver: JSONLDResolver | None = None,
         normalize_tables: bool = False,
         filter_boilerplate: bool = False,
     ):
@@ -98,6 +102,7 @@ class DocumentCleaner:
         self.heading_extractor = heading_extractor or HeadingHierarchyExtractor()
         self.density_scorer = density_scorer or SemanticDensityScorer()
         self.metadata_harvester = metadata_harvester or MetadataHarvester()
+        self.jsonld_resolver = jsonld_resolver or JSONLDResolver()
         self.normalize_tables = normalize_tables
         self.filter_boilerplate = filter_boilerplate
 
@@ -118,6 +123,7 @@ class DocumentCleaner:
                     json_ld.append(value)
             except (ValueError, TypeError):
                 warnings.append("INVALID_JSON_LD")
+        resolved_graph = self.jsonld_resolver.resolve(json_ld)
         base = soup.find("base", href=True)
         base_url = urljoin(page.source_url, base["href"]) if base else page.source_url
         metadata_harvest = self.metadata_harvester.harvest(soup, base_url)
@@ -210,6 +216,7 @@ class DocumentCleaner:
                                  tables=structured_tables,
                                  outline=outline,
                                  density=density_report,
-                                 metadata=metadata_harvest)
+                                 metadata=metadata_harvest,
+                                 json_ld_graph=resolved_graph)
         document.output_character_count = len(document.extraction_text())
         return document

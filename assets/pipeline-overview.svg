@@ -1,32 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 560" width="100%" height="100%">
   <defs>
     <!-- Background Gradient -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#070c18"/>
-      <stop offset="50%" stop-color="#0b1329"/>
-      <stop offset="100%" stop-color="#04070e"/>
+      <stop offset="0%" stop-color="#050811"/>
+      <stop offset="50%" stop-color="#0a1224"/>
+      <stop offset="100%" stop-color="#03060c"/>
     </linearGradient>
 
     <!-- Card Backgrounds -->
     <linearGradient id="cardGradDark" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#111c30"/>
-      <stop offset="100%" stop-color="#0a101d"/>
+      <stop offset="0%" stop-color="#101a2e"/>
+      <stop offset="100%" stop-color="#080e1a"/>
     </linearGradient>
 
-    <!-- Gradients for Layers -->
-    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#059669"/>
-    </linearGradient>
-
+    <!-- Header & Accent Gradients -->
     <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#38bdf8"/>
       <stop offset="100%" stop-color="#0284c7"/>
     </linearGradient>
 
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
     <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#f43f5e"/>
-      <stop offset="100%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#db2777"/>
+    </linearGradient>
+
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
     </linearGradient>
 
     <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -34,15 +39,15 @@
       <stop offset="100%" stop-color="#6366f1"/>
     </linearGradient>
 
-    <!-- Marker Arrows -->
-    <marker id="arrowCyan" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,1 L7,4 L0,7 Z" fill="#38bdf8"/>
-    </marker>
+    <!-- Markers -->
     <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
       <path d="M0,1 L7,4 L0,7 Z" fill="#10b981"/>
     </marker>
     <marker id="arrowPink" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,1 L7,4 L0,7 Z" fill="#ec4899"/>
+      <path d="M0,1 L7,4 L0,7 Z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L7,4 L0,7 Z" fill="#f59e0b"/>
     </marker>
     <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
       <path d="M0,1 L7,4 L0,7 Z" fill="#a855f7"/>
@@ -50,201 +55,211 @@
   </defs>
 
   <style>
-    .brand-title { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 2px; fill: #38bdf8; }
-    .card-title { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+    .brand-title { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 2px; fill: #38bdf8; }
+    .card-title { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 13.5px; font-weight: 700; fill: #f8fafc; }
     .card-sub { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 11px; font-weight: 500; fill: #94a3b8; }
     .badge-text { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 11px; font-weight: 700; fill: #6ee7b7; }
     .item-title { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 11px; font-weight: 700; }
     .item-desc { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; font-size: 10px; font-weight: 400; fill: #94a3b8; }
-    .code-pill { font-family: 'Consolas', 'Fira Code', monospace; font-size: 10px; font-weight: 600; }
   </style>
 
-  <!-- Main Outer Frame -->
-  <rect x="2" y="2" width="1196" height="516" rx="16" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="2"/>
+  <!-- Outer Canvas Frame -->
+  <rect x="2" y="2" width="1436" height="556" rx="16" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="2"/>
 
   <!-- Top Title Bar -->
-  <text x="36" y="40" class="brand-title">⚡ HAIOX SMART MINER ARCHITECTURE · DUAL-ENGINE BLUEPRINT (v1.6.0)</text>
-  <rect x="940" y="22" width="224" height="26" rx="13" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
-  <text x="955" y="39" class="badge-text">🛡️ Phase 1 &amp; 2 Complete (15/15)</text>
+  <text x="32" y="44" class="brand-title">⚡ HAIOX SMART MINER ARCHITECTURE · ENTERPRISE BLUEPRINT (v2.0.0 CAPSTONE)</text>
+  <rect x="1150" y="24" width="258" height="28" rx="14" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1165" y="43" class="badge-text">🏆 218/218 Tests Pass · 4 Phases</text>
 
-  <!-- ================= BOX 1: INPUT URL & ZERO-TRUST GATEWAY ================= -->
-  <g transform="translate(36, 68)">
-    <rect width="180" height="420" rx="12" fill="url(#cardGradDark)" stroke="#334155" stroke-width="1.5"/>
-    <rect x="0" y="0" width="180" height="6" rx="3" fill="url(#cyanGrad)"/>
-    <text x="16" y="32" class="card-title">🌐 Untrusted Ingestion</text>
-    <text x="16" y="48" class="card-sub">Pre-Socket Validation</text>
+  <!-- ================= 1. PHASE 1: ZERO-TRUST NETWORK SHIELD ================= -->
+  <g transform="translate(32, 74)">
+    <rect width="240" height="456" rx="12" fill="url(#cardGradDark)" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="0" y="0" width="240" height="6" rx="3" fill="url(#greenGrad)"/>
+    <text x="14" y="28" class="card-title">🛡️ Phase 1: Network Shield</text>
+    <text x="14" y="44" class="card-sub">Zero-Trust Pre-Flight &amp; Anti-DoS</text>
 
-    <!-- Sub-blocks -->
-    <rect x="12" y="68" width="156" height="58" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="86" class="item-title" fill="#38bdf8">Target URL Resolver</text>
-    <text x="20" y="101" class="item-desc">Strict HTTP/HTTPS schemes</text>
-    <text x="20" y="115" class="item-desc">Canonical normalizer</text>
+    <rect x="10" y="56" width="220" height="68" rx="6" fill="#062d22" stroke="#059669"/>
+    <text x="18" y="74" class="item-title" fill="#6ee7b7">Zero-Trust SSRF Filter</text>
+    <text x="18" y="89" class="item-desc">35,000 ops/s · Drops 127.0.0.1, RFC1918</text>
+    <text x="18" y="103" class="item-desc">Aborts 169.254.169.254 AWS/GCP meta</text>
 
-    <rect x="12" y="138" width="156" height="74" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="156" class="item-title" fill="#ef4444">Zero-Trust Pre-Flight</text>
-    <text x="20" y="171" class="item-desc">Zero OS socket open</text>
-    <text x="20" y="186" class="item-desc">Link-local / loopback drop</text>
-    <text x="20" y="200" class="item-desc">RFC 1918 / 4193 audit</text>
+    <rect x="10" y="132" width="220" height="68" rx="6" fill="#092540" stroke="#0284c7"/>
+    <text x="18" y="150" class="item-title" fill="#7dd3fc">Bounded Stream (5MB Cutoff)</text>
+    <text x="18" y="165" class="item-desc">Anti-DoS streaming buffer</text>
+    <text x="18" y="179" class="item-desc">Terminates zip-bombs &amp; raw video/bin</text>
 
-    <rect x="12" y="224" width="156" height="88" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="242" class="item-title" fill="#f59e0b">Cloud Metadata Audit</text>
-    <text x="20" y="257" class="item-desc">Blocks 169.254.169.254</text>
-    <text x="20" y="271" class="item-desc">AWS / GCP / Azure meta</text>
-    <text x="20" y="285" class="item-desc">Alibaba / Oracle drop</text>
-    <text x="20" y="299" class="item-desc">Latency: &lt; 0.03 ms</text>
+    <rect x="10" y="208" width="220" height="68" rx="6" fill="#1e1842" stroke="#6366f1"/>
+    <text x="18" y="226" class="item-title" fill="#c7d2fe">HTTPX Pool &amp; HTTP/2</text>
+    <text x="18" y="241" class="item-desc">100 max conns · 20 persistent keepalive</text>
+    <text x="18" y="255" class="item-desc">TLS session reuse &amp; sub-ms handshake</text>
 
-    <rect x="12" y="324" width="156" height="80" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="342" class="item-title" fill="#10b981">In-Memory DNS Cache</text>
-    <text x="20" y="357" class="item-desc">LRU TTL (1M+ ops/sec)</text>
-    <text x="20" y="371" class="item-desc">Multi-IP CDN fallback</text>
-    <text x="20" y="385" class="item-desc">Zero DNS poisoning</text>
+    <rect x="10" y="284" width="220" height="68" rx="6" fill="#301446" stroke="#9333ea"/>
+    <text x="18" y="302" class="item-title" fill="#e9d5ff">Dynamic Fingerprint Matrix</text>
+    <text x="18" y="317" class="item-desc">5 Coherent Chrome, Edge, Firefox profiles</text>
+    <text x="18" y="331" class="item-desc">112k ops/s · Canary trap auditor</text>
+
+    <rect x="10" y="360" width="220" height="84" rx="6" fill="#08201a" stroke="#10b981"/>
+    <text x="18" y="378" class="item-title" fill="#34d399">DNS Cache &amp; Full Jitter Retry</text>
+    <text x="18" y="393" class="item-desc">LRU In-Memory TTL (&lt;0.001ms lookup)</text>
+    <text x="18" y="407" class="item-desc">Multi-IP CDN fallback</text>
+    <text x="18" y="421" class="item-desc">AWS Full Jitter · 520k ops/s on 429/5xx</text>
   </g>
 
   <!-- Arrow 1 -> 2 -->
-  <line x1="216" y1="278" x2="252" y2="278" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <line x1="272" y1="302" x2="304" y2="302" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
 
-  <!-- ================= BOX 2: PHASE 1 - THE NETWORK SHIELD ================= -->
-  <g transform="translate(256, 68)">
-    <rect width="250" height="420" rx="12" fill="url(#cardGradDark)" stroke="#10b981" stroke-width="1.5"/>
-    <rect x="0" y="0" width="250" height="6" rx="3" fill="url(#shieldGrad)"/>
-    <text x="18" y="32" class="card-title">🛡️ Phase 1: Network Shield</text>
-    <text x="18" y="48" class="card-sub">High-Throughput Transport &amp; Anti-Bot</text>
+  <!-- ================= 2. PHASE 2: LOCAL STRUCTURAL PARSING ================= -->
+  <g transform="translate(308, 74)">
+    <rect width="256" height="456" rx="12" fill="url(#cardGradDark)" stroke="#f43f5e" stroke-width="1.5"/>
+    <rect x="0" y="0" width="256" height="6" rx="3" fill="url(#pinkGrad)"/>
+    <text x="14" y="28" class="card-title">🧹 Phase 2: Structural Parser</text>
+    <text x="14" y="44" class="card-sub">7-Stage Zero-LLM Pipeline (~50ms)</text>
 
-    <!-- Subsystems -->
-    <rect x="14" y="68" width="222" height="64" rx="6" fill="#062d22" stroke="#059669"/>
-    <text x="24" y="86" class="item-title" fill="#6ee7b7">1. Zero-Trust SSRF Shield</text>
-    <text x="24" y="101" class="item-desc">35,000 ops/sec · Latency &lt;30µs</text>
-    <text x="24" y="116" class="item-desc">Guarantees zero internal network leaks</text>
+    <rect x="10" y="56" width="236" height="48" rx="6" fill="#240c1d" stroke="#db2777"/>
+    <text x="18" y="73" class="item-title" fill="#f472b6">AST Noise &amp; Cookie Cleaner</text>
+    <text x="18" y="87" class="item-desc">Strips banners, trackers, inline styles</text>
 
-    <rect x="14" y="140" width="222" height="64" rx="6" fill="#092540" stroke="#0284c7"/>
-    <text x="24" y="158" class="item-title" fill="#7dd3fc">2. Bounded Streaming Anti-DoS</text>
-    <text x="24" y="173" class="item-desc">Hard 5MB chunk cutoff threshold</text>
-    <text x="24" y="188" class="item-desc">Aborts zip-bombs &amp; binary files</text>
+    <rect x="10" y="110" width="236" height="48" rx="6" fill="#180e29" stroke="#9333ea"/>
+    <text x="18" y="127" class="item-title" fill="#c084fc">2D Matrix Table Normalizer</text>
+    <text x="18" y="141" class="item-desc">Colspan/rowspan expansion to GFM tables</text>
 
-    <rect x="14" y="212" width="222" height="64" rx="6" fill="#1e1842" stroke="#6366f1"/>
-    <text x="24" y="230" class="item-title" fill="#c7d2fe">3. HTTPX Connection Pool</text>
-    <text x="24" y="245" class="item-desc">100 max conns · 20 keepalive</text>
-    <text x="24" y="260" class="item-desc">HTTP/2 multiplexing &amp; TLS session reuse</text>
+    <rect x="10" y="164" width="236" height="48" rx="6" fill="#111827" stroke="#3b82f6"/>
+    <text x="18" y="181" class="item-title" fill="#60a5fa">Heading Hierarchy Synthesizer</text>
+    <text x="18" y="195" class="item-desc">Monotonic gap repair &amp; Unicode slugs</text>
 
-    <rect x="14" y="284" width="222" height="64" rx="6" fill="#301446" stroke="#9333ea"/>
-    <text x="24" y="302" class="item-title" fill="#e9d5ff">4. Dynamic Fingerprint Matrix</text>
-    <text x="24" y="317" class="item-desc">Chrome, Edge, Firefox, Safari profiles</text>
-    <text x="24" y="332" class="item-desc">112k ops/s · Anti-bot canary auditor</text>
+    <rect x="10" y="218" width="236" height="48" rx="6" fill="#08201a" stroke="#10b981"/>
+    <text x="18" y="235" class="item-title" fill="#34d399">Semantic Density Scorer</text>
+    <text x="18" y="249" class="item-desc">Text-to-tag ratio &amp; link-farm pruner</text>
 
-    <rect x="14" y="356" width="222" height="52" rx="6" fill="#382108" stroke="#d97706"/>
-    <text x="24" y="374" class="item-title" fill="#fde68a">5. Exponential Jitter Retry</text>
-    <text x="24" y="389" class="item-desc">AWS Full Jitter · 520k ops/s · 429/5xx recover</text>
+    <rect x="10" y="272" width="236" height="48" rx="6" fill="#241508" stroke="#d97706"/>
+    <text x="18" y="289" class="item-title" fill="#fbbf24">Metadata &amp; OpenGraph Harvester</text>
+    <text x="18" y="303" class="item-desc">Authors, timestamps, OG/Twitter cards</text>
+
+    <rect x="10" y="326" width="236" height="56" rx="6" fill="#260b1e" stroke="#e11d48"/>
+    <text x="18" y="343" class="item-title" fill="#fb7185">JSON-LD Schema Graph Resolver</text>
+    <text x="18" y="357" class="item-desc">19k ops/s · Cross-node @id unrolling</text>
+    <text x="18" y="371" class="item-desc">Articles, Products, Breadcrumbs</text>
+
+    <rect x="10" y="388" width="236" height="56" rx="6" fill="#061f2d" stroke="#0284c7"/>
+    <text x="18" y="405" class="item-title" fill="#38bdf8">Trilogy Evidence Packager</text>
+    <text x="18" y="419" class="item-desc">Deterministic SHA-256 provenance</text>
+    <text x="18" y="433" class="item-desc">Token-budget chunks for DeepSeek/Qwen</text>
   </g>
 
   <!-- Arrow 2 -> 3 -->
-  <line x1="506" y1="278" x2="542" y2="278" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowCyan)"/>
+  <line x1="564" y1="302" x2="596" y2="302" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrowPink)"/>
 
-  <!-- ================= BOX 3: HYBRID ROUTER & PLAYWRIGHT ================= -->
-  <g transform="translate(546, 68)">
-    <rect width="180" height="420" rx="12" fill="url(#cardGradDark)" stroke="#38bdf8" stroke-width="1.5"/>
-    <rect x="0" y="0" width="180" height="6" rx="3" fill="url(#cyanGrad)"/>
-    <text x="16" y="32" class="card-title">🧭 Hybrid Router</text>
-    <text x="16" y="48" class="card-sub">Dual Execution Engine</text>
+  <!-- ================= 3. PHASE 3: TURBO DYNAMIC ANTI-BOT ================= -->
+  <g transform="translate(600, 74)">
+    <rect width="256" height="456" rx="12" fill="url(#cardGradDark)" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="0" y="0" width="256" height="6" rx="3" fill="url(#amberGrad)"/>
+    <text x="14" y="28" class="card-title">🎭 Phase 3: Dynamic Anti-Bot</text>
+    <text x="14" y="44" class="card-sub">Playwright Pooling &amp; Stealth Shims</text>
 
-    <rect x="12" y="68" width="156" height="74" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="86" class="item-title" fill="#38bdf8">⚡ Static Fast-Path</text>
-    <text x="20" y="101" class="item-desc">High-throughput HTTPX</text>
-    <text x="20" y="115" class="item-desc">Sub-100ms response</text>
-    <text x="20" y="129" class="item-desc">Zero headless browser RAM</text>
+    <rect x="10" y="56" width="236" height="68" rx="6" fill="#1b1708" stroke="#d97706"/>
+    <text x="18" y="74" class="item-title" fill="#fde68a">Playwright Context Pool</text>
+    <text x="18" y="89" class="item-desc">&lt;150ms context acquisition</text>
+    <text x="18" y="103" class="item-desc">Auto RAM recycling at 50 contexts</text>
 
-    <rect x="12" y="152" width="156" height="88" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="170" class="item-title" fill="#f43f5e">🎭 Dynamic Engine</text>
-    <text x="20" y="185" class="item-desc">Playwright Chromium</text>
-    <text x="20" y="199" class="item-desc">SPA / React / Vue hydrated</text>
-    <text x="20" y="213" class="item-desc">Wait-for-selector hooks</text>
-    <text x="20" y="227" class="item-desc">Automatic JS barrier bypass</text>
+    <rect x="10" y="132" width="236" height="68" rx="6" fill="#0b2416" stroke="#059669"/>
+    <text x="18" y="150" class="item-title" fill="#6ee7b7">Route Blocker (121k ops/s)</text>
+    <text x="18" y="165" class="item-desc">Aborts images, fonts, media, telemetry</text>
+    <text x="18" y="179" class="item-desc">Cuts headless RAM footprint by 80-90%</text>
 
-    <rect x="12" y="248" width="156" height="82" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="266" class="item-title" fill="#fbbf24">Quality Evaluator</text>
-    <text x="20" y="281" class="item-desc">Min text length gates</text>
-    <text x="20" y="295" class="item-desc">Word diversity &gt; 0.20</text>
-    <text x="20" y="309" class="item-desc">Cookie wall detection</text>
-    <text x="20" y="323" class="item-desc">Rejects soft 404 on 200</text>
+    <rect x="10" y="208" width="236" height="68" rx="6" fill="#240c1a" stroke="#db2777"/>
+    <text x="18" y="226" class="item-title" fill="#f472b6">Stealth Anti-Bot Driver</text>
+    <text x="18" y="241" class="item-desc">Purges navigator.webdriver (57k ops/s)</text>
+    <text x="18" y="255" class="item-desc">WebGL vendor &amp; window.chrome shims</text>
 
-    <rect x="12" y="338" width="156" height="70" rx="6" fill="#081020" stroke="#1e293b"/>
-    <text x="20" y="356" class="item-title" fill="#a855f7">Metadata Fallback</text>
-    <text x="20" y="371" class="item-desc">Schema claims recovery</text>
-    <text x="20" y="385" class="item-desc">Recovers JS shells without body</text>
+    <rect x="10" y="284" width="236" height="68" rx="6" fill="#0a1f33" stroke="#0284c7"/>
+    <text x="18" y="302" class="item-title" fill="#7dd3fc">SmartWait &amp; Hydration Settler</text>
+    <text x="18" y="317" class="item-desc">React, Next.js, Vue, Nuxt ready flags</text>
+    <text x="18" y="331" class="item-desc">MutationObserver DOM quietness monitor</text>
+
+    <rect x="10" y="360" width="236" height="84" rx="6" fill="#1e1842" stroke="#6366f1"/>
+    <text x="18" y="378" class="item-title" fill="#c7d2fe">Barriers v2 &amp; Visual Evidence</text>
+    <text x="18" y="393" class="item-desc">Turnstile, CF Challenge, Datadome WAF</text>
+    <text x="18" y="407" class="item-desc">Stepped infinite scroll emulator</text>
+    <text x="18" y="421" class="item-desc">Cryptographic SHA-256 screenshot hash</text>
   </g>
 
   <!-- Arrow 3 -> 4 -->
-  <line x1="726" y1="278" x2="762" y2="278" stroke="#ec4899" stroke-width="2.5" marker-end="url(#arrowPink)"/>
+  <line x1="856" y1="302" x2="888" y2="302" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrowAmber)"/>
 
-  <!-- ================= BOX 4: PHASE 2 - THE STRUCTURAL PARSING ENGINE ================= -->
-  <g transform="translate(766, 68)">
-    <rect width="220" height="420" rx="12" fill="url(#cardGradDark)" stroke="#ec4899" stroke-width="1.5"/>
-    <rect x="0" y="0" width="220" height="6" rx="3" fill="url(#pinkGrad)"/>
-    <text x="16" y="32" class="card-title">🧹 Phase 2: Parsing Engine</text>
-    <text x="16" y="48" class="card-sub">7-Stage Zero-LLM Pipeline</text>
+  <!-- ================= 4. PHASE 4: ENTERPRISE CLI & FASTAPI ================= -->
+  <g transform="translate(892, 74)">
+    <rect width="256" height="456" rx="12" fill="url(#cardGradDark)" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="0" y="0" width="256" height="6" rx="3" fill="url(#purpleGrad)"/>
+    <text x="14" y="28" class="card-title">🚀 Phase 4: Production Capstone</text>
+    <text x="14" y="44" class="card-sub">CLI, Microservice, Docker &amp; Telemetry</text>
 
-    <!-- 7 Local Parsing Subsystems -->
-    <rect x="12" y="66" width="196" height="42" rx="6" fill="#240c1d" stroke="#db2777"/>
-    <text x="20" y="82" class="item-title" fill="#f472b6">8. AST Noise Cleaner</text>
-    <text x="20" y="96" class="item-desc">Strips ads, cookies, inline SVGs</text>
+    <rect x="10" y="56" width="236" height="74" rx="6" fill="#1b1035" stroke="#7c3aed"/>
+    <text x="18" y="74" class="item-title" fill="#c084fc">Standalone CLI (smart-miner)</text>
+    <text x="18" y="89" class="item-desc">smart-miner crawl https://... --format json</text>
+    <text x="18" y="103" class="item-desc">smart-miner serve --port 8000</text>
+    <text x="18" y="117" class="item-desc">smart-miner benchmark --phase all</text>
 
-    <rect x="12" y="114" width="196" height="42" rx="6" fill="#180e29" stroke="#9333ea"/>
-    <text x="20" y="130" class="item-title" fill="#c084fc">9. Table Normalizer</text>
-    <text x="20" y="144" class="item-desc">2D matrix grid, colspan/rowspan</text>
+    <rect x="10" y="138" width="236" height="84" rx="6" fill="#0f172a" stroke="#3b82f6"/>
+    <text x="18" y="156" class="item-title" fill="#60a5fa">Enterprise FastAPI Microservice</text>
+    <text x="18" y="171" class="item-desc">POST /v1/crawl (Sync ingestion)</text>
+    <text x="18" y="185" class="item-desc">POST /v1/crawl/batch (Async queue)</text>
+    <text x="18" y="199" class="item-desc">GET /v1/crawl/stream (Real-time SSE)</text>
+    <text x="18" y="213" class="item-desc">GET /health (Uptime inspection)</text>
 
-    <rect x="12" y="162" width="196" height="42" rx="6" fill="#111827" stroke="#3b82f6"/>
-    <text x="20" y="178" class="item-title" fill="#60a5fa">10. Heading Synthesizer</text>
-    <text x="20" y="192" class="item-desc">Unicode slugs &amp; monotonic gap repair</text>
+    <rect x="10" y="230" width="236" height="74" rx="6" fill="#042f2e" stroke="#0d9488"/>
+    <text x="18" y="248" class="item-title" fill="#2dd4bf">Non-Root Multi-Stage Docker</text>
+    <text x="18" y="263" class="item-desc">python:3.11-slim runtime</text>
+    <text x="18" y="277" class="item-desc">Runs under appuser (UID 10001)</text>
+    <text x="18" y="291" class="item-desc">Hard limits: 1024M RAM · 1.50 CPUs</text>
 
-    <rect x="12" y="210" width="196" height="42" rx="6" fill="#08201a" stroke="#10b981"/>
-    <text x="20" y="226" class="item-title" fill="#34d399">11. Density Scorer</text>
-    <text x="20" y="240" class="item-desc">Text-to-tag ratio &amp; link-farm pruner</text>
+    <rect x="10" y="312" width="236" height="66" rx="6" fill="#2e1065" stroke="#9333ea"/>
+    <text x="18" y="330" class="item-title" fill="#d8b4fe">Prometheus Metrics Exporter</text>
+    <text x="18" y="345" class="item-desc">GET /metrics scrape endpoint</text>
+    <text x="18" y="359" class="item-desc">Total requests, latency, barrier metrics</text>
 
-    <rect x="12" y="258" width="196" height="42" rx="6" fill="#241508" stroke="#d97706"/>
-    <text x="20" y="274" class="item-title" fill="#fbbf24">12. Metadata Harvester</text>
-    <text x="20" y="288" class="item-desc">OG, Twitter cards, timestamps, author</text>
-
-    <rect x="12" y="306" width="196" height="48" rx="6" fill="#260b1e" stroke="#e11d48"/>
-    <text x="20" y="322" class="item-title" fill="#fb7185">13. JSON-LD Graph Resolver</text>
-    <text x="20" y="336" class="item-desc">19k ops/s · Cross-node @id unroller</text>
-    <text x="20" y="348" class="item-desc">Articles, Products, FAQs, Breadcrumbs</text>
-
-    <rect x="12" y="360" width="196" height="48" rx="6" fill="#061f2d" stroke="#0284c7"/>
-    <text x="20" y="376" class="item-title" fill="#38bdf8">14. Evidence Grounding Packager</text>
-    <text x="20" y="390" class="item-desc">SHA-256 fingerprint · Token budgeting</text>
-    <text x="20" y="402" class="item-desc">GFM XML &lt;haiox_evidence&gt; blocks</text>
+    <rect x="10" y="386" width="236" height="58" rx="6" fill="#18181b" stroke="#71717a"/>
+    <text x="18" y="404" class="item-title" fill="#e4e4e7">Domain Rate-Limiting Queue</text>
+    <text x="18" y="419" class="item-desc">Per-domain concurrency semaphores</text>
+    <text x="18" y="433" class="item-desc">Prevents IP bans and target throttling</text>
   </g>
 
   <!-- Arrow 4 -> 5 -->
-  <line x1="986" y1="278" x2="1022" y2="278" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <line x1="1148" y1="302" x2="1180" y2="302" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
 
-  <!-- ================= BOX 5: TRILOGY SYNERGY PLANE ================= -->
-  <g transform="translate(1026, 68)">
-    <rect width="140" height="420" rx="12" fill="url(#cardGradDark)" stroke="#a855f7" stroke-width="1.5"/>
-    <rect x="0" y="0" width="140" height="6" rx="3" fill="url(#purpleGrad)"/>
-    <text x="14" y="32" class="card-title">🏛️ Trilogy</text>
-    <text x="14" y="48" class="card-sub">Perception Bedrock</text>
+  <!-- ================= 5. TRILOGY SYNERGY & GUARANTEES ================= -->
+  <g transform="translate(1184, 74)">
+    <rect width="224" height="456" rx="12" fill="url(#cardGradDark)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="0" y="0" width="224" height="6" rx="3" fill="url(#cyanGrad)"/>
+    <text x="14" y="28" class="card-title">🏛️ Trilogy Synergy</text>
+    <text x="14" y="44" class="card-sub">Foundation for Haiox Agents</text>
 
-    <rect x="10" y="68" width="120" height="96" rx="6" fill="#1b1035" stroke="#7c3aed"/>
-    <text x="16" y="86" class="item-title" fill="#c084fc">Haiox Orchestrator</text>
-    <text x="16" y="103" class="item-desc">Token governance</text>
-    <text x="16" y="117" class="item-desc">Budget allocation</text>
-    <text x="16" y="131" class="item-desc">Workflow routing</text>
-    <text x="16" y="145" class="item-desc">Zero hallucination</text>
+    <rect x="10" y="56" width="204" height="88" rx="6" fill="#1b1035" stroke="#7c3aed"/>
+    <text x="18" y="74" class="item-title" fill="#c084fc">Haiox Orchestrator</text>
+    <text x="18" y="91" class="item-desc">Blind Brainstorming council</text>
+    <text x="18" y="105" class="item-desc">AI Project Manager</text>
+    <text x="18" y="119" class="item-desc">Token governance &amp; consensus</text>
+    <text x="18" y="133" class="item-desc">Zero hallucination guarantee</text>
 
-    <rect x="10" y="174" width="120" height="114" rx="6" fill="#1b1035" stroke="#7c3aed"/>
-    <text x="16" y="192" class="item-title" fill="#c084fc">Haiox MultiAgent</text>
-    <text x="16" y="209" class="item-desc">DePIN Research</text>
-    <text x="16" y="223" class="item-desc">Evidence graphs</text>
-    <text x="16" y="237" class="item-desc">Fact-checking</text>
-    <text x="16" y="251" class="item-desc">Source audit</text>
-    <text x="16" y="265" class="item-desc">Tamper-proof</text>
+    <rect x="10" y="152" width="204" height="88" rx="6" fill="#092540" stroke="#0284c7"/>
+    <text x="18" y="170" class="item-title" fill="#7dd3fc">Haiox Deep Research</text>
+    <text x="18" y="187" class="item-desc">Evolved from DePIN agent</text>
+    <text x="18" y="201" class="item-desc">Whitepaper &amp; GitHub code audit</text>
+    <text x="18" y="215" class="item-desc">Zero-hype fact-checking</text>
+    <text x="18" y="229" class="item-desc">Automated X thread publisher</text>
 
-    <rect x="10" y="298" width="120" height="110" rx="6" fill="#08201a" stroke="#10b981"/>
-    <text x="16" y="316" class="item-title" fill="#6ee7b7">Guarantees</text>
-    <text x="16" y="333" class="item-desc">163/163 Tests Pass</text>
-    <text x="16" y="347" class="item-desc">Zero Socket Leaks</text>
-    <text x="16" y="361" class="item-desc">Zero LLM Tokens</text>
-    <text x="16" y="375" class="item-desc">50ms Processing</text>
-    <text x="16" y="389" class="item-desc">Cryptographic SHA</text>
+    <rect x="10" y="248" width="204" height="82" rx="6" fill="#240c1a" stroke="#db2777"/>
+    <text x="18" y="266" class="item-title" fill="#f472b6">Haiox MultiAgent Telegram</text>
+    <text x="18" y="283" class="item-desc">Automated AI content machine</text>
+    <text x="18" y="297" class="item-desc">OpenRouter LLM captioning</text>
+    <text x="18" y="311" class="item-desc">AI banner image generation</text>
+    <text x="18" y="325" class="item-desc">Autonomous channel delivery</text>
+
+    <rect x="10" y="338" width="204" height="106" rx="6" fill="#062d22" stroke="#059669"/>
+    <text x="18" y="356" class="item-title" fill="#6ee7b7">Production Guarantees</text>
+    <text x="18" y="373" class="item-desc">✅ 218/218 Passing Tests (100%)</text>
+    <text x="18" y="387" class="item-desc">✅ Zero Socket / Memory Leaks</text>
+    <text x="18" y="401" class="item-desc">✅ Zero LLM Cost for Parsing</text>
+    <text x="18" y="415" class="item-desc">✅ Cryptographic SHA-256 Provenance</text>
+    <text x="18" y="429" class="item-desc">✅ Hard 1GB RAM / 1.5 CPU Limit</text>
   </g>
 </svg>

@@ -1,6 +1,6 @@
 # Haiox Smart Miner ⚡
 
-**The bedrock data ingestion, zero-trust network shield, and structural parsing engine powering the autonomous Haiox Agent Ecosystem.**
+**Pillar I of the Haiox Portfolio: The foundational sensory perception layer and zero-trust web ingestion engine.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Tests](https://img.shields.io/badge/Tests-218%2F218_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
-Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineered to turn raw, untrusted web pages into structured, noise-free documents (`CleanDocument`) and cryptographically signed evidence packets (`EvidenceArtifact`). It serves as the foundational sensory and perception layer for autonomous agents: grounding autonomous research agents, preventing LLM hallucinations, and maintaining verifiable source provenance.
+Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineered to turn raw, untrusted web pages into structured, noise-free documents (`CleanDocument`) and cryptographically signed evidence packets (`EvidenceArtifact`). It stands as **Pillar I of the Haiox Trilogy**: the foundational sensory and perception layer for autonomous systems, grounding autonomous research agents, preventing LLM hallucinations, and maintaining verifiable source provenance.
 
 <p align="center">
   <img src="assets/pipeline-overview.svg" width="100%" alt="Haiox Smart Miner Architecture: Zero-Trust Network Shield, Hybrid Router, 7-Stage Structural Parser, and Trilogy Synergy">

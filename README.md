@@ -1,6 +1,6 @@
 # Haiox Smart Miner ⚡
 
-**The bedrock data ingestion, zero-trust network shield, and structural parsing engine powering the Haiox AI Trilogy.**
+**The bedrock data ingestion, zero-trust network shield, and structural parsing engine powering the autonomous Haiox Agent Ecosystem.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Tests](https://img.shields.io/badge/Tests-218%2F218_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
-Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineered to turn raw, untrusted web pages into structured, noise-free documents (`CleanDocument`) and cryptographically signed evidence packets (`EvidenceArtifact`). It serves as the foundational perception layer for the **Haiox AI Trilogy**: grounding autonomous research agents, preventing LLM hallucinations, and maintaining verifiable source provenance.
+Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineered to turn raw, untrusted web pages into structured, noise-free documents (`CleanDocument`) and cryptographically signed evidence packets (`EvidenceArtifact`). It serves as the foundational sensory and perception layer for autonomous agents: grounding autonomous research agents, preventing LLM hallucinations, and maintaining verifiable source provenance.
 
 <p align="center">
   <img src="assets/pipeline-overview.svg" width="100%" alt="Haiox Smart Miner Architecture: Zero-Trust Network Shield, Hybrid Router, 7-Stage Structural Parser, and Trilogy Synergy">
@@ -23,7 +23,7 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 ## 🏛️ Haiox Ecosystem Architecture
 
-Smart Miner operates as the data ingestion foundation in the 3-tier Haiox Agent ecosystem:
+Smart Miner operates as the data ingestion foundation in the Haiox Agent ecosystem:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -44,7 +44,7 @@ Smart Miner operates as the data ingestion foundation in the 3-tier Haiox Agent 
 
 1. **Haiox Smart Miner (Bedrock Ingestion Engine):** Fetches, filters, de-noises, and structures single-page web data with zero network leaks and sub-millisecond DNS caching.
 2. **[Haiox MultiAgent](https://github.com/haiox/Haiox_MultiAgent):** Autonomous verification and research pipeline operating on clean context artifacts.
-3. **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** System-wide workflow execution, model coordination, and resource governance.
+
 
 ---
 

@@ -1,6 +1,6 @@
 # Haiox Smart Miner ⚡
 
-**Pillar I of the Haiox Portfolio: The foundational sensory perception layer and zero-trust web ingestion engine.**
+**The bedrock data ingestion, zero-trust network shield, and structural parsing engine powering the Haiox AI Trilogy.**
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Tests](https://img.shields.io/badge/Tests-218%2F218_Passing-00C853?style=flat-square&logo=checkmarx&logoColor=white)](tests/)
@@ -9,7 +9,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6?style=flat-square)](LICENSE)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit_App-Live_Review-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://haiox-smart-miner-review.streamlit.app/)
 
-Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineered to turn raw, untrusted web pages into structured, noise-free documents (`CleanDocument`) and cryptographically signed evidence packets (`EvidenceArtifact`). It stands as **Pillar I of the Haiox Trilogy**: the foundational sensory and perception layer for autonomous systems, grounding autonomous research agents, preventing LLM hallucinations, and maintaining verifiable source provenance.
+## 💡 Why I Built This
+
+Most web scrapers break the moment Cloudflare updates its bot detection. Or worse: they download megabytes of bloated JavaScript and cookie banners, burning through your LLM token budget before the AI even reads the first real sentence.
+
+**Haiox Smart Miner acts as a zero-trust, noise-filtering web shield:**
+- **Bypasses modern bot protections:** Uses stealth Playwright profiles and headless routing to slip past Cloudflare, Datadome, and Turnstile challenges.
+- **Cuts out 90% of web junk without an LLM:** A local, zero-token 7-stage AST parser cleans ads, navigation bars, and cookie notices, outputting clean, structured Markdown.
+- **Guarantees source truth:** Cryptographically hashes every extracted page with SHA-256 so your AI agents can cite real, tamper-proof evidence instead of hallucinating.
+- **Engineered like a database engine:** 218 passing offline tests, zero network socket leaks, connection pooling, and sub-150ms browser contexts.
 
 <p align="center">
   <img src="assets/pipeline-overview.svg" width="100%" alt="Haiox Smart Miner Architecture: Zero-Trust Network Shield, Hybrid Router, 7-Stage Structural Parser, and Trilogy Synergy">
@@ -17,13 +25,13 @@ Haiox Smart Miner is a high-throughput, zero-trust web ingestion engine engineer
 
 [⚡ Try the Hosted Streamlit Dashboard](https://haiox-smart-miner-review.streamlit.app/) · Or run locally via `streamlit run streamlit_app.py`.
 
-> **v2.0.0 Capstone Release · All 4 Phases Complete (30/30 Subsystems Merged).** 218/218 passing offline tests, zero network socket leaks, standalone `smart-miner` CLI, enterprise FastAPI microservice with SSE streaming, multi-stage production Docker container, Prometheus metrics exporter (`/metrics`), domain rate-limiting batch queue, Playwright context pooling (<150ms), 120,000+ ops/s route resource blocking (80% RAM cut), stealth driver anti-bot shims, Turnstile/Datadome barrier diagnostics, infinite scroll emulation, and cryptographic visual evidence capture. Zero LLM dependencies required for complete local document parsing.
+> **v2.0.0 Capstone Release · All 4 Phases Complete (30/30 Subsystems Merged).** 218/218 passing offline tests, zero network socket leaks, standalone `smart-miner` CLI, enterprise FastAPI microservice with SSE streaming, multi-stage production Docker container, Prometheus metrics exporter (`/metrics`), domain rate-limiting batch queue, and cryptographic visual evidence capture. Zero LLM dependencies required for complete local document parsing.
 
 ---
 
 ## 🏛️ Haiox Ecosystem Architecture
 
-Smart Miner operates as the data ingestion foundation in the Haiox Agent ecosystem:
+Smart Miner operates as the data ingestion foundation in the 3-tier Haiox Agent ecosystem:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -44,7 +52,7 @@ Smart Miner operates as the data ingestion foundation in the Haiox Agent ecosyst
 
 1. **Haiox Smart Miner (Bedrock Ingestion Engine):** Fetches, filters, de-noises, and structures single-page web data with zero network leaks and sub-millisecond DNS caching.
 2. **[Haiox MultiAgent](https://github.com/haiox/Haiox_MultiAgent):** Autonomous verification and research pipeline operating on clean context artifacts.
-
+3. **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** System-wide workflow execution, model coordination, and resource governance.
 
 ---
 

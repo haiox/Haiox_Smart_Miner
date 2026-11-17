@@ -45,13 +45,13 @@ Smart Miner operates as the data ingestion foundation in the 3-tier Haiox Agent 
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │ [Tamper-Proof SHA-256 Evidence]
 ┌───────────────────────────────────▼────────────────────────────────────┐
-│                      Haiox Smart Miner (v1.6.0)                        │
+│                      Haiox Smart Miner (v2.0.0)                        │
 │            The Bedrock Ingestion Engine · Zero-Trust Shield            │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 1. **Haiox Smart Miner (Bedrock Ingestion Engine):** Fetches, filters, de-noises, and structures single-page web data with zero network leaks and sub-millisecond DNS caching.
-2. **[Haiox MultiAgent](https://github.com/haiox/Haiox_MultiAgent):** Autonomous verification and research pipeline operating on clean context artifacts.
+2. **[Haiox Deep Research](https://github.com/haiox/Haiox_Deep_Research):** Autonomous 6-node forensic verification and due-diligence engine operating on clean AST evidence.
 3. **[Haiox Orchestrator](https://github.com/haiox/Haiox-Orchestrator-Architecture):** System-wide workflow execution, model coordination, and resource governance.
 
 ---
